@@ -45,3 +45,23 @@ let videos = [
     videos[id-1].title = title; // 지금은 DB 가 아님
     return res.redirct(`/video/${id}`);
   }
+
+  //get 
+  export const getUpload = (req, res) => {
+    return res.render("upload", {pageTitle: "Upload video!"});
+  };
+
+  export const postUpload = (req, res) => {
+    // console.log(req.body); 입력한 값 보기 (form 안의 name 요소)
+    const { title } = req.body;
+    const newVideo = {
+      title,
+      rating: 0,
+      comments: 0,
+      createAt: "just now",
+      views: 0,
+      id: videos.legnth + 1,
+    }
+    videos.push(newVideo)
+    return res.redirect("/"); // to go home
+  }

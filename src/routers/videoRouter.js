@@ -1,17 +1,18 @@
 import express from "express";
-import { watch, getEdit, postEdit } from "../controllers/videoController";
+import { watch, getEdit, postEdit, getUpload, postUpload } from "../controllers/videoController";
 
 const videoRouter = express.Router();
 
 videoRouter.get("/:id(\\d+)", watch);
+videoRouter.route("/:id(\\d+)/edit").get(getEdit).post(postEdit);
+// videoRouter.get + videoRouter.post 
 
-videoRouter.get("/:id(\\d+)/edit", getEdit);
-videoRouter.post("/:id(\\d+)/edit", postEdit);
-// videoRouter.route("/:id(\\d+)/edit").get(getEdit).post(postEdit)
+videoRouter.route("/upload").get(getUpload).post(postUpload);
+// videoRouter.get + videoRouter.post
+
 
 
 export default videoRouter;
-
 /* 
     :param = url 안에 변수를 포함할 수 있게 해줌. ${} 의 역할
     url 안에 param 이 없는 get 함수가 param 이 있는 get 함수보다 위에 있어야함.
