@@ -3,8 +3,9 @@ include mixins/video
 
 block content 
     h1 Welcome here you will see the trending videos
-
-    each video in videos 
-        +video(video)
-    else
-        li Sorry, nothing found 
+        each video in videos 
+            +video(video) 
+            //
+                +video ==> mixin의 video함수 사용(+)
+        else
+            li Sorry, nothing found 

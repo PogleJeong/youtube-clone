@@ -1,13 +1,13 @@
+import "./database"; // DB 파일 IMPORT
+import "./models/Video" // model 불러오기
+
 import express from "express"; // express 패키지 import
 import morgan from "morgan"; // morgan 패키지
 import globalRouter from "./routers/globalRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
 
-const PORT = 4000;
-
 const app = express(); // express app 생성
-
 const logger = morgan("dev");
 
 app.set("view engine", "pug"); // 자동으로 views 파일에서 pug 파일을 찾게 설정되어있음
@@ -19,11 +19,7 @@ app.use("/", globalRouter); // /request로 / 를 받으면 globalRouter 로 이�
 app.use("/users", userRouter); // request로 /users 를 받으면 userRouter 로 이동 
 app.use("/videos",videoRouter); // request로 /videos 를 받으면 videoRouter 로 이동
 
-
-const handleListening = () => 
-    console.log(`Server listening on localhost:${PORT}!!`);
-
-app.listen(PORT, handleListening); // (포트번호, 함수)
+export default app;
 
 /*
     서버는 항상 켜져있는 컴퓨터와 같음.
