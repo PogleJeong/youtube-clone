@@ -12,9 +12,26 @@ const videoSchema = new mongoose.Schema({
     },
 });
 
-// "save" 하기전에 실행하는 middleware
+/* 해시태그 처리하는 여러방법 
+
+1. "save" 하기전에 실행하는 middleware
 videoSchema.pre("save", async function() {
-    this.hashtags = this.hashtags[0].split(",").map((word) => word.startWith("#") ? word : `#${word}`);
+    this.hashtags = this.hashtags.split(",").map((word) => word.startWith("#") ? word : `#${word}`);
+})
+
+or
+
+export const handleHashtags = (hashtags) => {
+    hashtags.split(",").map((word) => word.startWith("#") ? word : `#${word}`);
+}
+
+or 
+*/
+
+videoSchema.static("formatHashtags", function(hashtags) {
+    return hashtags
+        .split(",")
+        .map( word => word.startWith("#") ? word : `#${word}`);
 })
 
 const Video = mongoose.model("Video", videoSchema); // model 만들기(model 이름, model schema)

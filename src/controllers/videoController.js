@@ -26,7 +26,7 @@ export const home = async (req, res) => {
   } catch {
     return res.render("server-error");
   }
-}
+};
 
 export const watch = async (req, res) => {
   // req 는 URL (/video/:id)에서 받은 변수정보를 담음.
@@ -45,7 +45,7 @@ export const getEdit = async (req, res) => {
     return res.render("edit", {pageTitle: `Edit ${ video.title }`});
   } 
   return res.render("404", { pageTitle: "Video not found"})
-  }
+  };
 
 // video 수정
 export const postEdit = async (req, res) => {
@@ -54,16 +54,14 @@ export const postEdit = async (req, res) => {
   const video = await Video.exists({_id: id}); //or await Video.findById(id);
   if (video) {
 
-    await Video.findByIdAndUpdate(id, {
+    await Video.findByIdAndUpdate(id, { // ID를 통해 데이터를 찾고 업데이트
       title, 
       description, 
-      hashtags: hashtags
-        .split(",")
-        .map((word) => word.startWith("#") ? word : `#${word}`),
+      hashtags: Video.formatHashtags(hashtags),// video.js 안의 static 
     });
 
     return res.render(`/videos/${id}`);
-  }
+  };
   
   /*
     video.title = title;
@@ -74,7 +72,7 @@ export const postEdit = async (req, res) => {
       word.startWith("#") ? word : `#${word}`);
   */
   return res.render("404", { pageTitle: "Video not found"})
-}
+};
 
 export const getUpload = (req, res) => {
   return res.render("upload", {pageTitle: "Upload video!"});
@@ -98,4 +96,25 @@ export const postUpload = async (req, res) => {
     return res.render("upload", { pageTitle : "Upload Video", errorMesaage : error._message });
   }
   return res.redirect("/");
+};
+
+export const deleteVideo = async (req, res) => {
+  const { id } = req.params;
+  await Video.findByIdAndDelete(id); // delete
+  return res.redirect("/");
+};
+
+export const search = async (req, res) => {
+  //GET request 에서 ? param값 가져오기
+  const { keyword } = req.query;
+  let videos = [];
+  
+  if (keyword) { // keyword 가 입력되면 실행
+      videos = await Video.find({
+        title: {
+          $regex: new RegExp(keyword, "i"), // 정규식사용 할 수 있게 해줌
+      }, // where title = keyword
+    });
+  }
+  return res.render("search", { pageTitle: "Search", videos});
 }
