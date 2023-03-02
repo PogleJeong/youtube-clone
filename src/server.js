@@ -3,7 +3,7 @@ import "./models/Video" // model 불러오기
 
 import express from "express"; // express 패키지 import
 import morgan from "morgan"; // morgan 패키지
-import globalRouter from "./routers/globalRouter";
+import rootRouter from "./routers/rootRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
 
@@ -15,7 +15,7 @@ app.set("views", process.cwd() + "/src/views") // 경로지정
 app.use(logger); // global middleware
 app.use(express.urlencoded( {extended: true})); //express가 form value를 읽고 js 형식으로 전환.
 
-app.use("/", globalRouter); // /request로 / 를 받으면 globalRouter 로 이동
+app.use("/", rootRouter); // /request로 / 를 받으면 rootRouter 로 이동
 app.use("/users", userRouter); // request로 /users 를 받으면 userRouter 로 이동 
 app.use("/videos",videoRouter); // request로 /videos 를 받으면 videoRouter 로 이동
 
