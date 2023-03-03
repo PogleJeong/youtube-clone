@@ -3,9 +3,11 @@ import "./models/Video" // model 불러오기
 
 import express from "express"; // express 패키지 import
 import morgan from "morgan"; // morgan 패키지
+import session from "express-session";
 import rootRouter from "./routers/rootRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
+import { localsMiddleware } from "./middlewares";
 
 const app = express(); // express app 생성
 const logger = morgan("dev");
@@ -14,6 +16,13 @@ app.set("view engine", "pug"); // 자동으로 views 파일에서 pug 파일을 
 app.set("views", process.cwd() + "/src/views") // 경로지정
 app.use(logger); // global middleware
 app.use(express.urlencoded( {extended: true})); //express가 form value를 읽고 js 형식으로 전환.
+app.use(session({ // express 가 자동적으로 브라우저를 위한 session id 를 생성하여 전달
+    secret: "hello",
+    resave: true,
+    saveUninitialized: true,
+    })
+);
+app.use(localsMiddleware);
 
 app.use("/", rootRouter); // /request로 / 를 받으면 rootRouter 로 이동
 app.use("/users", userRouter); // request로 /users 를 받으면 userRouter 로 이동 

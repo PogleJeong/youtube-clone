@@ -8,8 +8,6 @@ videoRouter.route("/:id([0-9a-f]{24})/edit").get(getEdit).post(postEdit);
 videoRouter.route("/:id([0-9a-f]{24})/delete").get(deleteVideo);
 videoRouter.route("/upload").get(getUpload).post(postUpload);
 
-
-
 export default videoRouter;
 /* 
     :param = url 안에 변수를 포함할 수 있게 해줌. ${} 의 역할

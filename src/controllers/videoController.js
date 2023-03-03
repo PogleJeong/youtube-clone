@@ -24,7 +24,7 @@ export const home = async (req, res) => {
     const videos = await Video.find({});
     return res.render("home", {pageTitle : "Home", videos });
   } catch {
-    return res.render("server-error");
+    return res.status(404).render("server-error");
   }
 };
 
@@ -35,7 +35,7 @@ export const watch = async (req, res) => {
   if (video) {
     return res.render("watch", { pageTitle: video.title, video});
   } 
-  return res.render("404", { pageTitle: "Video not found"});
+  return res.status(404).render("404", { pageTitle: "Video not found"});
   };
 
 export const getEdit = async (req, res) => {
@@ -44,7 +44,7 @@ export const getEdit = async (req, res) => {
   if (video) {
     return res.render("edit", {pageTitle: `Edit ${ video.title }`});
   } 
-  return res.render("404", { pageTitle: "Video not found"})
+  return res.status(404).render("404", { pageTitle: "Video not found"})
   };
 
 // video 수정
@@ -93,7 +93,7 @@ export const postUpload = async (req, res) => {
     })
   } catch (error) { // error 출력 error에서 _message 를 통해 간략한 에러사항을 알 수 있음.
     console.log(error);
-    return res.render("upload", { pageTitle : "Upload Video", errorMesaage : error._message });
+    return res.status(400).render("upload", { pageTitle : "Upload Video", errorMesaage : error._message });
   }
   return res.redirect("/");
 };
