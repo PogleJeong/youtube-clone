@@ -47,7 +47,7 @@ export const postLogin = async (req, res) => {
     const user = await User.findOne({ username });
 
     // check if account exists
-    if (user) {
+    if (!user) {
         return res.status(400)
         .render("/login", { 
             pageTitle: "Login", 
@@ -71,6 +71,30 @@ export const postLogin = async (req, res) => {
 }
 
 export const logout = (req, res) => res.send("Log Out");
-export const edit = (req, res) => res.send("Edit User");
+
+export const postEdit = async (req, res) => {
+    const {
+      session: {
+        user: { _id, avatarUrl },
+      },
+      body: { name, email, username, location },
+      file,
+    } = req;
+    
+    const updatedUser = await User.findByIdAndUpdate(
+      _id,
+      {
+        avatarUrl: file ? file.path : avatarUrl, // 새로 avatar 업로드하면 새걸로 아니면 기존 그대로
+        name,
+        email,
+        username,
+        location,
+      },
+      { new: true }
+    );
+    req.session.user = updatedUser;
+    return res.redirect("/users/edit");
+  }
+
 export const remove = (req, res) => res.send("Remove User");
 export const see = (req, res) => res.send("See User");

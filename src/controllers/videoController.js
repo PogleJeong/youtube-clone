@@ -79,12 +79,14 @@ export const getUpload = (req, res) => {
 };
 
 export const postUpload = async (req, res) => {
+  const file = req.file; // multer
   const { title, description, hashtags } = req.body;
 
   try {
     await Video.create({ // creates Video data model / promise / save into DB
       title, // title : title
       description, // description : description
+      fileUrl: file.path,
       hashtags : hashtags.split(",").map((word)=> `#${word}`),
       meta: {
         views: 0,

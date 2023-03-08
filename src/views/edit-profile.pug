@@ -1,0 +1,11 @@
+extends base.pug
+
+block content
+    img(src="/" + loggedInUser.avatarUrl, width="100", height="100")
+    form(method="POST")
+        label(for="avatar") Avartatr
+        input(type="file", id="avatar")
+        input(name='title', placeholder="Video Title", value=video.title, required)
+        input(placeholder="Description", type="text", required, name="description", minlength=20, value=video.description)
+        input(placeholder="Hashtags, separated by comma.", required, type="text" , name="hashtags", value=video.hashtags.join())
+        input(value="Save" type="submit")
