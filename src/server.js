@@ -24,7 +24,9 @@ app.use(session({ // express 가 자동적으로 브라우저를 위한 session 
 );
 app.use(localsMiddleware);
 
-app.use("/uploads", express.static("uploads")); // upload 폴더를 노출을
+app.use("/static", express.static("assets")); //  유저들에게 assets 폴더 노출(/assets로 접속가능)
+app.use("/uploads", express.static("uploads")); // 유저들에게 upload 폴더를 노출(/upload로 접속가능)
+
 app.use("/", rootRouter); // /request로 / 를 받으면 rootRouter 로 이동
 app.use("/users", userRouter); // request로 /users 를 받으면 userRouter 로 이동 
 app.use("/videos",videoRouter); // request로 /videos 를 받으면 videoRouter 로 이동
