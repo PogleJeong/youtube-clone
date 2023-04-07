@@ -1,5 +1,5 @@
 // server 의 configuration 에 관련한 코드
-
+import "dotenv/config"; // 서버가 시작되는 곳에 위치해야 전체 파일에 적용됨.
 import "./database";
 import "./models/Video";
 import "./models/User";

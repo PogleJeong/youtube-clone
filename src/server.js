@@ -19,10 +19,20 @@ app.set("views", process.cwd() + "/src/views") // 경로지정
 app.use(logger); // global middleware
 app.use(express.urlencoded( {extended: true})); //express가 form value를 읽고 js 형식으로 전환.
 app.use(session({ // express 가 자동적으로 브라우저를 위한 session id 를 생성하여 전달
-    secret: "hello",
-    resave: true,
-    saveUninitialized: true,
-    store: MongoStore.create({mongoUrl: "mongodb://127.0.0.1:27017/wetube"}), // mongo store 사용
+    // cookie에 sign 할때 사용하는 String - session hijacking 을 막기위함.
+    secret: process.env.COOKIE_SECRET,
+
+    // Domain : 쿠키를 전달받는 호스트
+    // uninitialized : 세션이 새로만들어지고 수정된적 없는 세션 -> 이후 session 에 수정된 부빈 있으면 그때가 실제로 세션이 초기화된 부분(userController 에서의 req.session.loggedIn = true)
+    // saveUninitialized: false 는 세션을 수정할 때만 세션을 DB에 저장하고 쿠키를 넘겨줌, true 는 모든 방문자의 세션을 저장하고 쿠키를 넘겨줌
+    resave: false, 
+    saveUninitialized: false, 
+    
+    // Expire : 쿠키의 만료날짜 / 비워두면 컴퓨터를 재시작하거나 브라우저를 닫으면 없어짐.
+    cookie: { 
+        maxAge: 3600000, // 쿠키가 만료될때까지의 시간 (ms) (로그인유지시간으로 활용가능)
+    },
+    store: MongoStore.create({mongoUrl: process.env.DB_URL}), // mongo store 사용
     })
 );
 app.use(localsMiddleware);
