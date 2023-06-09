@@ -37,7 +37,8 @@ app.use(session({ // express 가 자동적으로 브라우저를 위한 session 
 );
 app.use(localsMiddleware);
 
-app.use("/uploads", express.static("uploads")); // 유저들에게 upload 폴더를 노출(/upload로 접속가능)
+app.use("/client", express.static("client"));
+app.use("/uploads", express.static("uploads")); // 사용자들에게 upload 폴더를 노출(/upload로 접속가능)
 
 app.use("/", rootRouter); // /request로 / 를 받으면 rootRouter 로 이동
 app.use("/users", userRouter); // request로 /users 를 받으면 userRouter 로 이동 

@@ -6,15 +6,14 @@ block content
     button#mute Mute 
     span#time 00:00/00:00
     input(type="range", min="0", max="1", step="0.2")#volume
-
-
-
-//-    div
+    div
+        h1=video.title
         p=video.description
         small=video.createdAt 
+        br
         a(href=`${video.id}/edit`) Edit Video &rarr;
         br
         a(href=`${video.id}/delete`) Delete Video &rarr;
 
 block scripts
-    script(src="/static/js/videoPlayer.js")
+    script(src="/static/js/videoPlayer")

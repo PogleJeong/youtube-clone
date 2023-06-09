@@ -3,9 +3,11 @@ import bcrypt from "bcrypt";
 
 const UserSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
+    socialOnly: { type: Boolean, default: false }, //github 계정인지 확인.
     username : { type: String, required: true, unique: true },
-    password : { type: String, required: true }, // 보안을 위해 해싱(hashing)시켜야함
+    password : { type: String }, // 보안을 위해 해싱(hashing)시켜야함
     name : { type: String, required: true },
+    avatarUrl: { type: String },
     location : { type: String },
 });
 
