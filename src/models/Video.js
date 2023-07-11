@@ -11,6 +11,9 @@ const videoSchema = new mongoose.Schema({
         views: { type: Number, required: true, default: 0 },
         rating: { type: Number, required: true, default: 0 }
     },
+    owner: { // ObjectId : mongoDB에서 제공하는_id 정보를 담기 위한 종류, ref는 연결시킬 다른 model
+        type: mongoose.Schema.Types.ObjectId, required: true, ref: "User"
+    }
 });
 
 /* 해시태그 처리하는 여러방법 

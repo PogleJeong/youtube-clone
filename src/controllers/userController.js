@@ -1,4 +1,3 @@
-import { async } from "regenerator-runtime";
 import User from "../models/User";
 import bcrypt from "bcrypt";
 export const getJoin = (req, res) => {
@@ -262,6 +261,21 @@ export const postChangePassword = async(req, res) => {
 
 export const see = async(req, res) => {
     const { id } = req.params;
-    const user = await User.findById(id);
-    return res.render("users/profile", { pageTitle: `${user.username}의 Profile`, user });
+    // 유저정보 + 유저의 비디오정보 double populate
+    const user = await User.findById(id).populate({
+        path: "videos",
+        populate: {
+            path: "owner",
+            model: "User",
+        }
+    });
+    if (!user) {
+        return res.status(404).render("404", {
+            pageTitle: "User not found"
+        })
+    }
+    return res.render("users/profile", { 
+        pageTitle: `${user.username}의 Profile`, 
+        user,
+    });
 }

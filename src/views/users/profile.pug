@@ -1,4 +1,13 @@
 extends ../base
+include ../mixins/video
 
-block 
-    
+block content 
+    div.profile__data 
+        img(src="/" + user.avatarUrl)
+        h3=user.name
+
+    div.video-grid
+        each video in user.videos   
+            +video(video)
+        else    
+            span.empty__message No videos found

@@ -4,7 +4,7 @@ block content
     img(src="/" + loggedInUser.avatarUrl, width="100", height="100")
     if errorMessage 
             small #{errorMessage}
-    form(method="POST", enctype="multipart/form-data")
+    form(method="POST", enctype="multipart/form-data").edit-profile__form
         label(for="avatar") Avartar 
         input(type="file", id="avatar", name="avatar", accept="image/*")
         input(placeholder="Name", name="name", type="text" value=loggedInUser.name required )
@@ -12,9 +12,7 @@ block content
         input(placeholder="Username", name="username", type="text" value=loggedInUser.username required )
         input(placeholder="Location", name="location", type="text" value=loggedInUser.location required )
         input(value="Update Profile", type="submit" )
-        
-    
         // social 로그인 계정인 경우 비밀번호 변경 
-    if loggedInUser.socialOnly
-        
-        a(href="change-password") Change Password &rarr;
+        if loggedInUser.socialOnly
+            div.edit-profile__password
+            a(href="change-password") Change Password &rarr;

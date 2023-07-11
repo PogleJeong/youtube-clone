@@ -1,0 +1,28 @@
+.search__form {
+    display: flex;
+    align-items: center;
+    position: relative;
+    input {
+        all: unset; // 요소의 속성을 상속하는 값은 상속값으로, 아니면 초기값으로
+        width: 90%;
+        font-size: 16px;
+        color: white;
+        background-color: black;
+        padding: 15px 20px;
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 5px;
+        margin-bottom: 5px;
+    }
+    button {
+        all: unset;
+    }
+    button {
+        position: absolute;
+        right: 15px;
+        font-size: 18px;
+        text-align: center;
+        background-color: rgba(0,0,0,0);
+        cursor: pointer;
+    }
+
+}
