@@ -41,6 +41,11 @@ Webpack 은 Frontend 에서 브라우저에게 우리가 작성한 최신문법,
     2. Entry
     > 우리가 Webpack 으로 보내 처리하고자하는, 우리가 작성한 파일들을 가르킨다.
     > property 에 우리가 작성한 파일, Webpack 에 적용할 파일 경로를 입력한다.
+    >> 여러 파일들을 다음과 같이 입력할 수 있다.
+    >> entry: {
+        main: "~~.js",
+        sub: "~~.js",
+    }
 
     3. Output
     > 처리된 결과물에 대한 정보, filename, path 작성 필요
@@ -48,6 +53,9 @@ Webpack 은 Frontend 에서 브라우저에게 우리가 작성한 최신문법,
         filename: "output.js", 
         path: path: path.resolve(__dirname, "assets", "js"), -- 절대경로
         clean: true,  -- output folder를 빌드하기전에 clean 작업함.
+    }
+    >> output: {
+        filename: "js/[name].js, 를 통해 entry 변수를 적용할 수 있다. 
     }
 
     4. package.json 에서 script 추가 작성

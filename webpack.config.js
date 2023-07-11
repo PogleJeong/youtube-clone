@@ -2,8 +2,11 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const path = require("path");
 
 module.exports = {
-  entry: "./src/client/js/main.js", // 우리가 처리하고 싶은 파일
-  mode: "development",
+  entry: {
+    main: "./src/client/js/main.js", // 우리가 처리하고 싶은 파일
+    videoPlayer: "./src/client/js/videoPlayer.js",
+  },
+    mode: "development",
   watch: true,
   plugins: [
     new MiniCssExtractPlugin({
@@ -11,7 +14,7 @@ module.exports = {
     }),
   ],
   output: {
-    filename: "main.js",
+    filename: "[name].js",  // [name] 을통해 entry 변수 사용가능
     path: path.resolve(__dirname, "assets", "js"),
     clean: true,
   },
