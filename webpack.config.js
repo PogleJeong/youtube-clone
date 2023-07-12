@@ -5,6 +5,7 @@ module.exports = {
   entry: {
     main: "./src/client/js/main.js", // 우리가 처리하고 싶은 파일
     videoPlayer: "./src/client/js/videoPlayer.js",
+    recorder: "./src/client/js",
   },
     mode: "development",
   watch: true,

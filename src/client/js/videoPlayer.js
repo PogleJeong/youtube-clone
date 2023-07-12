@@ -1,26 +1,32 @@
 const video = document.querySelector("video");
 const playBtn = document.getElementById("play");
+const playIcon = playBtn.querySelector("i"); // play btn 안에 아이콘
 const muteBtn = document.getElementById("mute");
+const muteIcon = muteBtn.querySelector("i"); // mute btn 안에 아이콘
 const volumeRange = document.getElementById("volume");
 const currentTime = document.getElementById("currentTime");
 const totalTime = document.getElementById("totalTime");
 const timeline = document.getElementById("timeline");
 const fullScreenBtn = document.getElementById("fullScreen");
+const fullScreenIcon = fullScreenBtn.querySelector("i");
 const videoContainer = document.getElementById("videoContainer");
+const videoControls = document.getElementById("videoControls");
 
-let volumeValue = 0.5; // 처음 동영상 소리 
+let volumeValue = 0.5; // 처음 동영상 소리
+let controlsTimeout = null; // timeout 함수를 조건에 따라 여러번 발동시킬 수 있도록 변수를 선언
+let controlsMovementTimeout = null;
 video.volume = volumeValue;
 
 const formatTime = (seconds) => new Date(seconds * 1000).toISOString().substring(11,19);
 
 const handlePlayClick = () => {
     video.paused? video.play(): video.pause();
-    playBtn.innerText = video.paused ? "Play" : "Pause";
+    playIcon.className = video.paused ? "fas fa-play" : "fas fa-pause";
 }
 
 const handleMute = () => {
     video.muted = video.muted ? false : true;
-    muteBtn.innerText = video.muted ? "Unmute" : "Mute";
+    muteIcon.className = video.muted ? "fas fa-volume-mute" : "fas fa-volume-up";
     volumeRange.value = video.muted ? 0 : volumeValue;
 }
 
@@ -30,10 +36,9 @@ const handleVolumnChange = (event) => {
             value 
         }
     } = event;
-    if (video.muted) {
-        video.muted = false;
-        muteBtn.innerText = "Mute";
-    }
+    video.muted = video.muted ? false : true; 
+    muteIcon.className = value == 0 ? "fas fa-volume-mute" : "fas fa-volume-up";
+    
     volumeValue = value;
     video.volume = value;
 }
@@ -50,6 +55,17 @@ const handleTimeUpdate = () => {
     timeline.value = Math.floor(video.currentTime);
 }
 
+/** 비디오가 모두 종료되면 발생 
+ *  조회수 올리기
+ *  백엔드-프론트엔드가 쉽게 데이터를 공유하기 위한 방법으로 element 의 dataset 을 사용
+*/
+const handleEnded = () => {
+    const { id } = videoContainer.dataset;
+    fetch(`/api/videos/${id}/view`, {
+        method: "POST",
+    });
+}
+
 /** 타임라인 바 변경시 발생 */
 const handleTimelineChange = (event) => {
     const {
@@ -62,20 +78,62 @@ const handleFullScreen = () => {
     const fullscreen = document.fullscreenElement;
     if(fullscreen) {
         document.exitFullscreen();
-        fullScreenBtn.innerText = "Enter Full Screen";
+        fullScreenIcon.classList = "fas fa-expand";
     }else{
         videoContainer.requestFullscreen();
-        fullScreenBtn.innerText = "Exit Full Screen";
+        fullScreenIcon.classList = "fas fa-compress";
+    }
+}
+
+const hideControls = () => videoControls.classList.remove("showing");
+
+/** 비디오 위에서 마우스 움직임 감지하는 함수
+    비디오에서 마우스가 움직이면 컨트롤바를 보여줌.
+    1. 3초 후에 발생하는 setTimeout 이 생김 (컨트롤바 숨기기)
+    2. 3초 안에 마우스 움직임이 시작되면 if 문에서 걸리고, 기존setTimeout 함수는 없어지고 새로운 setTimeout 함수가 생성.
+    3. 3초 동안 움직임이 없으면 기존 setTimeout 함수가 발동하므로 hideControls 함수가 발생.
+    4. 컨트롤 바 숨겨짐
+  
+*/
+const handleMouseMove = () => {
+    if (controlsTimeout) {
+        clearTimeout(controlsTimeout); // 해당 id 를 가지고 있는 timeout function 제거
+        controlsTimeout = null;
+    }
+    if (controlsMovementTimeout) { // 마우스가 움직이고 있으면 id 존재 - 3초동안 움직임이 없을 경우 null 값.
+        clearTimeout(controlsMovementTimeout);
+        controlsMovementTimeout = null;
+    }
+    videoControls.classList.add("showing");
+    controlsMovementTimeout = setTimeout(hideControls, 3000);
+}
+
+/** 마우스가 비디오 밖으로 나가는 것을 감지
+ *  마우스가 비디오 밖으로 나갈경우 컨트롤바를 숨김.
+*/
+const handleMouseLeave = () => {
+    controlsTimeout = setTimeout(hideControls, 3000);
+}
+
+const handleKeyPress = (event) => {
+    if (event.code === "Space") {
+        handlePlayClick();
     }
 }
 
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMute);
-volumeRange.addEventListener("input", handleVolumnChange);
-video.addEventListener("loadedmetadata", handleLoaderMetadata);
-video.addEventListener("timeupdate", handleTimeUpdate);
 timeline.addEventListener("input", handleTimelineChange);
 fullScreenBtn.addEventListener("click", handleFullScreen);
+volumeRange.addEventListener("input", handleVolumnChange);
+
+video.addEventListener("loadedmetadata", handleLoaderMetadata);
+video.addEventListener("timeupdate", handleTimeUpdate);
+video.addEventListener("ended", handleEnded);
+video.addEventListener("click", handlePlayClick);
+video.addEventListener("mousemove", handleMouseMove);
+video.addEventListener("mouseleave", handleMouseLeave);
+document.addEventListener("keydown", handleKeyPress);
 
 /*
     [video]
@@ -88,6 +146,9 @@ fullScreenBtn.addEventListener("click", handleFullScreen);
 
     2. timeupdate
     비디오의 시간이 변할때마다 발생
+
+    3. ended
+    비디오가 재생이 모두 완료되면 발생
 
 
     <<속성>>

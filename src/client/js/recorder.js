@@ -2,7 +2,7 @@ const startBtn = document.getElementById("startBtn");
 const video = document.getElementById("preview");
 
 let stream; // 녹화시 필요한 객체저장
-let recorder; // 녹
+let recorder;
 let videoFile;
 //프론트엔트 오류시 regeneratorRuntime 설치 필요 (async, await 사용)
 // npm i regenerator-runtime
@@ -11,7 +11,10 @@ let videoFile;
 const init = async() => {
     stream = await navigator.mediaDevices.getUserMedia({
         audio: true, 
-        video: {width : 400, height: 300},
+        video: {
+            width : 400, 
+            height: 300
+        },
     });
     video.srcObject = stream;
     video.play(); // 미리보기

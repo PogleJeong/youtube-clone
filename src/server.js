@@ -9,6 +9,8 @@ import MongoStore from "connect-mongo";
 import rootRouter from "./routers/rootRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
+import apiRouter from "./routers/apiRouter";
+
 import { localsMiddleware } from "./middlewares";
 
 const app = express(); // express app 생성
@@ -47,6 +49,7 @@ app.use("/uploads", express.static("uploads"));
 app.use("/", rootRouter); // /request로 / 를 받으면 rootRouter 로 이동
 app.use("/users", userRouter); // request로 /users 를 받으면 userRouter 로 이동 
 app.use("/videos",videoRouter); // request로 /videos 를 받으면 videoRouter 로 이동
+app.use("/api", apiRouter);
 
 export default app;
 
