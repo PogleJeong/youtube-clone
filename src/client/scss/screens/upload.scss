@@ -1,0 +1,20 @@
+#selfContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#videoContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 10%;
+    margin: 30px 0px;
+    #preview {
+        width: 100%;
+    }
+    #startBtn {
+        width: 100px;
+        height: 40px;
+    }
+}
