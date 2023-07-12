@@ -1,3 +1,7 @@
+//FFmpeg 사용 : 영상에서 썸네일 따오기
+import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
+import { async } from "regenerator-runtime";
+
 const startBtn = document.getElementById("startBtn");
 const video = document.getElementById("preview");
 
@@ -18,7 +22,15 @@ const init = async() => {
     video.play(); 
 };
 
-const handleDownload = () => {
+const handleDownload = async() => {
+    // 1단계 - ffmpeg 소프트웨어 로드
+    const ffmpeg = createFFmpeg({log:true})
+    await ffmpeg.load();
+
+    // 2단계 - ffmpeg.FS() 파일작성해서 가상공간에 저장
+    ffmpeg.FS("writeFile", "recording.webm", await fetchFile(videoFile));
+    await ffmpeg.run("-i", "recording.webm", "-r", "60","output.mp4"); // recording.webm 을 초당 60프레임으로 인코딩하여 output.mp4로 변환
+
     // 해당 element 를 클릭시 a tag 를 생성하여 바로 클릭(자동)
     const a = document.createElement("a");
     a.href= videoFile;
