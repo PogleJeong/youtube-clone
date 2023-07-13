@@ -27,14 +27,6 @@ export const publicOnlyMiddleware = (req, res, next) => {
     }
 }
 
-
-/* 
-    multer : multipart/form-data를 처리하기 위한 node.js 미들웨어
-
-    1. multer 를 통해서 form으로부터 받은 파일을 시스템에 저장한다
-    2. 다음 미들웨어로 request.file 로 파일정보를 넘긴다.
-  
-*/
 export const avatarUpload = multer({
     dest: "uploads/avatars/", // 저장할 위치(destination)는 server의 uploads 파일
     limits: {
