@@ -1,7 +1,19 @@
+#avatarContainer {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 482px;
+    margin: 0 auto;
+    img {
+        width: 150px;
+        height: 150px;
+    }
+}
+
 .edit-profile__form {
     label {
         display: block;
-        font-size: 14px;
+        font-size: 1.2em;
+        font-weight: bold;
         margin-bottom: 10px;
     }
 }
@@ -12,4 +24,10 @@
     a {
         text-decoration: underline;
     }
+}
+
+#updateBtn {
+    background-color: aliceblue;
+    color: black;
+    font-weight: bold;
 }

@@ -16,7 +16,7 @@ videoRouter.route("/upload")
     .all(protectorMiddleware)
     .get(getUpload)
     // 파일업로드를 위한 미들웨어(multer)
-    .post(videoUpload.single("video"), postUpload);
+    .post(videoUpload.fields([{name: "video"},{name: "thumbnail"}]), postUpload);
 
 export default videoRouter;
 /* 

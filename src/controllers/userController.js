@@ -78,7 +78,7 @@ export const postEdit = async (req, res) => {
         user: { _id, avatarUrl, email: sessionEmail, username: sessionUsername },
       },
       body: { 
-        name, email: formEmail, username: formUsername, location 
+        name: formName, email: formEmail, username: formUsername, location: formLocation
       },
       file,
     } = req;
@@ -116,10 +116,11 @@ export const postEdit = async (req, res) => {
       _id,
       {
         // 새파일업로드 유무
+        name: formName,
+        email: formEmail,
+        username: formUsername,
         avatarUrl: file ? file.path : avatarUrl,
-        formEmail,
-        formUsername,
-        location,
+        location: formLocation,
       },
       { new: true }
     );

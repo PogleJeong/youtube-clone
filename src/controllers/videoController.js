@@ -1,4 +1,3 @@
-import { async } from "regenerator-runtime";
 import User from "../models/User";
 import Video from "../models/Video"; // DB MODEL 사용
 
@@ -95,15 +94,17 @@ export const getUpload = (req, res) => {
 
 export const postUpload = async (req, res) => {
   const { user : { _id } } = req.session;
-  const { path: fileUrl } = req.file; // multer
+  const { video, thumbnail } = req.files; // multer
   const { title, description, hashtags } = req.body;
-
+  console.log(video);
+  console.log(thumbnail);
   try {
     // 1. video model 에 data 넣기
     const newVideo = await Video.create({ // creates Video data model / promise / save into DB
       title, // title : title
       description, // description : description
-      fileUrl,
+      videoUrl: video[0].path.replace(/[\\]/g, "/"),
+      thumbnailUrl: thumbnail[0].path.replace(/[\\]/g, "/"),
       owner:_id,
       hashtags : hashtags.split(",").map((word)=> `#${word}`),
       meta: {

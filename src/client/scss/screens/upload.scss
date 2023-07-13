@@ -1,20 +1,40 @@
 #selfContainer {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-}
-
-#videoContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0 10%;
-    margin: 30px 0px;
-    #preview {
-        width: 100%;
-    }
-    #startBtn {
+    margin: 50px 20px;
+    #selfRecordBtn {
         width: 100px;
         height: 40px;
+        margin-top: 40px;
+        margin-bottom: 40px;
     }
+    #videoContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 30px 0px;
+        #preview {
+            width: 100%;
+            margin-bottom: 40px;
+        }
+        #startBtn {
+            width: 100px;
+            height: 40px;
+        }
+        &:not(.showing) {
+            display: none;
+        }
+    }
+}
+
+#label {
+    font-size: 0.8em;
+}
+
+#uploadBtn {
+    background-color: aliceblue;
+    color: black;
+    font-weight: bold;
 }

@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 // 스키마 생성 및 설정
 const videoSchema = new mongoose.Schema({
     title: { type: String, required: true },
-    fileUrl: { type: String, required: true},
+    videoUrl: { type: String, required: true},
+    thumbnailUrl: { type: String, required: true },
     description: { type: String, required: true },
     createdAt: { type: Date, requried: true, default: Date.now }, // Date.now 괄호필요없음!!
     hashtags: [{type: String}], // String == type: String

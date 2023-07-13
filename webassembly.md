@@ -8,7 +8,7 @@
 
 WebAssembly에서 제공하는 브라우저 및 노드용 FFmpeg
 ffmpeg.wasm은 FFmpeg의 순수한 Webassembly/Javascript 포트. 비디오 및 오디오 녹음, 변환, 스트리밍 등을 브라우저 내부에서 할 수 있도록 도와줌.
-FFmpeg WebAssembly를 사용하는 이유는 FFmpeg를 사용해서 브라우저로 하여금 비디오 파일을 변환하기 위함.
+FFmpeg WebAssembly를 사용하는 이유는 FFmpeg를 사용해서 브라우저로 하여금 비디오 파일을 변환하기 위함.
 
 > npm 설치 : npm install @ffmpeg/ffmpeg @ffmpeg/core
 > github : https://github.com/ffmpegwasm/ffmpeg.wasm
@@ -19,9 +19,19 @@ FFmpeg WebAssembly를 사용하는 이유는 FFmpeg를 사용해서 브라우저
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 
 > 1단계 - ffmpeg 소프트웨어 로드
+
 const ffmpeg = createFFmpeg({ log: true}); // log : 로그추적
 await ffmpeg.load(); // 소프트웨어 로드
 
-> 2단계 - ffmpeg 이라는 가상의 컴퓨터에 파일 생성
+> 2단계 - ffmpeg 이라는 가상의 컴퓨터에 파일 생성 및 읽기
+>> ffmpeg.FS() : File System
+
 ffmpeg.FS("writeFile", "recording.webm", binary file);
 await ffmpeg.run("명령어") 
+const mp4File = ffmpeg.FS("readFile", "output.mp4"); - 
+
+> 3단계 - ffmpeg 를 통해 Uint8Array 데이터를 가져오고 Blob 객체로 만들기 위해 ArrayBuffer 로 변환. Uint8Array 는 Blob 객체로 만들 수 없음
+
+const mp4Blob = new Blob([mp4File.buffer], {type: "video/mp4"})
+
+# 3-2 사용: 썸네일 만들기.
