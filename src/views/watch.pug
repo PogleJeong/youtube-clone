@@ -28,7 +28,12 @@ block content
     div#videoSummary
         small=video.createdAt 
         p=video.description
-    div    
+
+    if loggedIn
+        div.video__comments
+            form.video__comment-form#commentForm
+                textarea(cols="30", rows="10", placeholder="Write a nice comment...")
+                button Add Comment 
         
         
     if String(video.owner._id) === String(loggedInUser)
@@ -38,3 +43,5 @@ block content
 
 block scripts 
     script(src="/static/js/videoPlayer.js")
+    if loggedIn
+        script(src="/static/js/commentSection.js")

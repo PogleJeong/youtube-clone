@@ -1,3 +1,4 @@
+import { async } from "regenerator-runtime";
 import User from "../models/User";
 import Video from "../models/Video"; // DB MODEL 사용
 
@@ -56,6 +57,7 @@ export const getEdit = async (req, res) => {
     _id : String
   */
   if (String(video.owner) !== String(_id)) {
+    req.flash("error", "Your are not the owner of the video.");
     return res.status(403).redirect("/");
   }
   return res.render("edit", {pageTitle: `Edit ${ video.title }`});
@@ -73,7 +75,7 @@ export const postEdit = async (req, res) => {
       description, 
       hashtags: Video.formatHashtags(hashtags),// video.js 안의 static 
     });
-
+    req.flash("success", "Changes saved");
     return res.render(`/videos/${id}`);
   };
   
@@ -166,5 +168,11 @@ export const registerView = async(req, res) => {
   }
   video.meta.views = video.meta.views + 1;
   await video.save();
+  return res.sendStatus(200);
+}
+
+export const writeComment = async(req, res) => {
+  console.log(req.params);
+  console.log(req.body);
   return res.sendStatus(200);
 }

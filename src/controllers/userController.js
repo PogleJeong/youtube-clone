@@ -64,6 +64,7 @@ export const postLogin = async (req, res) => {
 
 export const logout = (req, res) => {
     req.session.destroy(); // 세션연결끊기
+    req.flash("info", "Bye Bye");
     return res.redirect("/");
 }
 
@@ -220,7 +221,13 @@ export const finishGitHubLogin = async(req, res) => {
 }
 
 export const getChangePassword = (req, res) => {
-    return res.render("users/change-password", { pageTitle: "Change Password"});
+    if(req.session.user.socialOnly) {
+        req.flash("error", "Can't change password (Social Account)");
+        return res.redirect("/");
+    }
+    return res.render("users/change-password", { 
+        pageTitle: "Change Password",
+    });
 }
 
 export const postChangePassword = async(req, res) => {
@@ -256,7 +263,8 @@ export const postChangePassword = async(req, res) => {
     user.password = newPassword;
     await user.save(); //User.js 해싱 후 저장
     req.session.user.password = user.password; // 세션업데이트
-    
+    req.flash("info","Password Updated");
+
     return res.redirect("/users/logout");
 }
 
@@ -271,6 +279,7 @@ export const see = async(req, res) => {
         }
     });
     if (!user) {
+        req.flash("info", "User not found");
         return res.status(404).render("404", {
             pageTitle: "User not found"
         })

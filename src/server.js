@@ -5,6 +5,7 @@ import express from "express"; // express 패키지 import
 import morgan from "morgan"; // morgan 패키지
 import session from "express-session";
 import MongoStore from "connect-mongo";
+import flash from "express-flash";
 
 import rootRouter from "./routers/rootRouter";
 import userRouter from "./routers/userRouter";
@@ -20,6 +21,8 @@ app.set("view engine", "pug"); // 자동으로 views 파일에서 pug 파일을 
 app.set("views", process.cwd() + "/src/views") // 경로지정
 app.use(logger); // global middleware
 app.use(express.urlencoded( {extended: true})); //express가 form value를 읽고 js 형식으로 전환.
+app.use(express.json()); // fetch 로 보내는  request payload 를 파싱함. 
+
 app.use(session({ // express 가 자동적으로 브라우저를 위한 session id 를 생성하여 전달
     // cookie에 sign 할때 사용하는 String - session hijacking 을 막기위함.
     secret: process.env.COOKIE_SECRET,
@@ -37,6 +40,7 @@ app.use(session({ // express 가 자동적으로 브라우저를 위한 session 
     store: MongoStore.create({mongoUrl: process.env.DB_URL}), // mongo store 사용
     })
 );
+app.use(flash());
 app.use(localsMiddleware);
 
 /* 

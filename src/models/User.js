@@ -9,7 +9,8 @@ const UserSchema = new mongoose.Schema({
     name : { type: String, required: true },
     avatarUrl: { type: String },
     location : { type: String },
-    videos: [{type: mongoose.Schema.Types.ObjectId, required: true, ref: "Video"}]
+    comment: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+    videos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Video" }]
 });
 
 // save 하기전 실행하는 함수
