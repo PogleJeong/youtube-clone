@@ -1,6 +1,7 @@
 import { async } from "regenerator-runtime";
 import User from "../models/User";
 import Video from "../models/Video"; // DB MODEL 사용
+import Comment from "../models/Comment";
 
 /* 
   Mongoose : callback 방식, promise 방식으로 나뉨.
@@ -36,7 +37,7 @@ export const watch = async (req, res) => {
   // req 는 URL (/video/:id)에서 받은 변수정보를 담음.
   const { id } = req.params;
   // 비디오의 정보 + 해당 비디오의 작성자 닉네임 불러오기(ref 된 model 에서 가져올 정보)
-  const video = await Video.findById(id).populate("owner");
+  const video = await Video.findById(id).populate("owner").populate("comment");
   console.log(video);
   
   if (video) {
@@ -133,7 +134,9 @@ export const deleteVideo = async (req, res) => {
   const video = await Video.findById(id);
   // 1. 해당 비디오가 존재하는가
   if(!video) {
-    return res.status(404).render("404", {pageTitle: "Video not found."});
+    return res.status(404).render("404", {
+      pageTitle: "Video not found."
+    });
   }
   // 2. 지우고자하는 영상의 소유자인가
   if (String(video.owner)!==String(_id)) {
@@ -172,7 +175,39 @@ export const registerView = async(req, res) => {
 }
 
 export const writeComment = async(req, res) => {
-  console.log(req.params);
-  console.log(req.body);
-  return res.sendStatus(200);
+  const { 
+    session: { user },
+    params: { id },
+    body: { text },
+  } = req;
+
+  const video = await Video.findById(id);
+
+  if (!video) {
+    return res.sendStatus(404);
+  };
+
+  const comment = await Comment.create({
+    text,
+    owner: user._id,
+    video: id,
+  });
+
+  video.comment.push(comment._id);
+  video.save();
+  return res.status(201).json({newCommentId: comment._id}); // reponse 에 json 데이터 발송
+}
+
+export const removeComment = async(req, res) => {
+  const {
+    body: { comment_id }
+  } = req;
+
+  const comment = await Comment.findByIdAndDelete(comment_id);
+
+  if (!comment) {
+    return res.sendStatus(404);
+  };
+
+  return res.sendStatus(201);
 }
