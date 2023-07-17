@@ -19,12 +19,19 @@ block content
                         i.fas.fa-expand
             div 
                 input(type="range", step="0.1", value="0", min="0")#timeline
-    div#videoHeader
-        h1=video.title
-        a(href=`/users/${video.owner._id}`) 
-            div
-                img#avatar(src="/"+video.owner.avatarUrl)
-                small #{video.owner.name}
+    
+    h1.video__title #{video.title}
+    div#video-header__container
+        div.video-header
+            a(href=`/users/${video.owner._id}`) 
+                div
+                    img#avatar(src=video.owner.avatarUrl)
+                    small #{video.owner.name}
+        div.thumb-box
+            i.fas.fa-thumbs-up#thumb-up(style=`background-color:${video.meta.thumbUp.includes(loggedInUser._id) ? "blue" : "none"}`)
+            span#thumb-up__count #{video.meta.thumbUp.length}
+            i.fas.fa-thumbs-down#thumb-down(style=`background-color:${video.meta.thumbDown.includes(loggedInUser._id) ? "blue" : "none"}`)
+            span#thumb-down__count #{video.meta.thumbDown.length}
     div#videoSummary
         small=video.createdAt 
         p=video.description

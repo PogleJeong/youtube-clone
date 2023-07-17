@@ -10,7 +10,8 @@ const videoSchema = new mongoose.Schema({
     hashtags: [{type: String}], // String == type: String
     meta: {
         views: { type: Number, required: true, default: 0 },
-        rating: { type: Number, required: true, default: 0 }
+        thumbUp: [{ type: mongoose.Schema.Types.ObjectId, required: true, default: 0 }],
+        thumbDown: [{ type: mongoose.Schema.Types.ObjectId, required: true, default: 0 }],
     },
     comment: [{ type: mongoose.Schema.Types.ObjectId, required: true, ref: "Comment"}],
     owner: { // ObjectId : mongoDB에서 제공하는_id 정보를 담기 위한 종류, ref는 연결시킬 다른 model

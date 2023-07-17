@@ -200,14 +200,93 @@ export const writeComment = async(req, res) => {
 
 export const removeComment = async(req, res) => {
   const {
+    session: { user },
     body: { comment_id }
   } = req;
 
-  const comment = await Comment.findByIdAndDelete(comment_id);
+  const comment1 = await Comment.findById(comment_id);
+  
+  if ( String(user._id) !== String(comment1.owner._id)) {
+    return res.sendStatus(404);
+  }
 
-  if (!comment) {
+  const comment2 = await Comment.findByIdAndDelete(comment_id);
+
+  if (!comment1) {
+    res.flash('error', '해당 댓글 삭제권한이 없습니다.');
+    return res.sendStatus(404);
+  };
+
+  if (!comment2) {
+    res.flash('error', '댓글이 삭제되지 않았습니다.');
     return res.sendStatus(404);
   };
 
   return res.sendStatus(201);
+}
+
+/** 좋아요버튼 */
+export const thumbUp = async(req, res) => {
+  const { 
+    session: { user },
+    params: { id },
+  } = req;
+  // 로그인 상태가 아닌경우
+  console.log("thumb!!!");
+
+  if (!user) {
+    res.flash("error", "로그인 후 사용하실 수 있습니다.")
+  }
+  const video = await Video.findById(id);
+  if (!video){
+    res.flash("error", "해당 비디오를 찾을 수가 없습니다.")
+    return res.sendstatus(404);
+  };
+
+  // 이미 좋아요 누른적이 있을경우
+  if (video.meta.thumbUp.includes(user._id)) {
+    console.log("비디오 좋아요 해제", video.meta.thumbUp);
+    video.meta.thumbUp.remove(user._id);
+    console.log("비디오 좋아요 개수", video.meta.thumbUp);
+    video.save();
+    return res.status(201).json({result: "remove", count: video.meta.thumbUp.length});
+  }
+  video.meta.thumbUp.push(user._id);
+  console.log("비디오 좋아요 추가");
+  video.save();
+  console.log("비디오 좋아요 개수", video.meta.thumbUp);
+  return res.status(201).json({result: "add", count: video.meta.thumbUp.length});
+}
+
+/** 싫어요버튼 */
+export const thumbDown = async(req, res) => {
+  const { 
+    session: { user },
+    params: { id },
+  } = req;
+
+  // 로그인 상태가 아닌경우
+  console.log("thumb!!!");
+  if (!user) {
+    res.flash("error", "로그인 후 사용하실 수 있습니다.")
+  }
+
+  const video = await Video.findById(id);
+  if (!video){
+    res.flash("error", "해당 비디오를 찾을 수가 없습니다.")
+    return res.sendstatus(404);
+  };
+
+  // 이미 싫어요 누른적이 있을경우
+  if (video.meta.thumbDown.includes(user._id)) {
+    video.meta.thumbDown.remove(user._id);
+    video.save();
+    console.log("비디오 싫어요 개수", video.meta.thumbDown);
+    return res.status(201).json({result: "remove", count: video.meta.thumbDown.length});
+  }
+  video.meta.thumbDown.push(user._id);
+  console.log("비디오 싫어요 추가");
+  video.save();
+  console.log("비디오 싫어요 개수", video.meta.thumbUp);
+  return res.status(201).json({result: "add", count: video.meta.thumbDown.length});
 }

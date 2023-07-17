@@ -1,8 +1,16 @@
+import { async } from "regenerator-runtime";
+
 const videoContainer = document.getElementById("videoContainer");
 
 const form = document.getElementById("commentForm");
 const textarea = form.querySelector("textarea");
 const removeCommentBtn = document.getElementsByClassName("removeCommentBtn");
+const thumbUp = document.getElementById("thumb-up");
+const thumbUpCount = document.getElementById("thumb-up__count");
+const thumbDown = document.getElementById("thumb-down");
+const thumbDownCount = document.getElementById("thumb-down__count");
+
+
 
 const addComment = (text, newCommentId) => {
     const videoComments = document.querySelector(".video__comments ul");
@@ -14,6 +22,7 @@ const addComment = (text, newCommentId) => {
     const span = document.createElement("span");
     const span2 = document.createElement("span");
     span2.className = "removeCommentBtn";
+    span2.addEventListener("click", handleRemove);
     span.innerText = ` ${text}`;
     span2.innerText = "ⓧ";
     newComment.appendChild(icon);
@@ -48,7 +57,6 @@ const handleSubmit = async(event) => {
 
 const handleRemove = async(event) => {
     event.preventDefault();
-    console.log(event.target.parentNode.dataset.id);
     const commentBox = event.target.parentNode;
     const comment_id = commentBox.dataset.id;
     const video_id = videoContainer.dataset.id;
@@ -65,10 +73,61 @@ const handleRemove = async(event) => {
     }
 }
 
+const handleThumbUp = async(event) => {
+    event.preventDefault();
+    const video_id = videoContainer.dataset.id;
+    const response = await fetch(`/api/videos/${video_id}/thumb-up`, {
+        method: "POST",
+    })
+
+    if (response.status === 404) {
+        console.log("thumb-up error")
+        return;
+    }
+    if (response.status === 201) {
+        const { result, count } = await response.json();
+        if (result === "add") {
+            thumbUp.style.backgroundColor = "blue";
+            thumbUpCount.innerText = count;
+        }
+        if (result === "remove") {
+            thumbUp.style.backgroundColor = "gray";
+            thumbUpCount.innerText = count;
+        }
+    }
+}
+
+const handleThumbDown = async(event) => {
+    event.preventDefault();
+    const video_id = videoContainer.dataset.id;
+    const response = await fetch(`/api/videos/${video_id}/thumb-down`, {
+        method: "POST",
+    })
+
+    if (response.status === 404) {
+        console.log("thumb-down error")
+        return;
+    }
+    if (response.status === 201) {
+        const { result, count } = await response.json();
+        if (result === "add") {
+            thumbDown.style.backgroundColor = "blue";
+            thumbDownCount.innerText = count;
+        }
+        if (result === "remove") {
+            thumbDown.style.backgroundColor = "gray";
+            thumbDownCount.innerText = count;
+        }
+    }
+}
+
 form.addEventListener("submit", handleSubmit);
+thumbUp.addEventListener("click", handleThumbUp);
+thumbDown.addEventListener("click", handleThumbDown);
 Array.from(removeCommentBtn).forEach(element => {
     element.addEventListener("click", handleRemove);
 });
+
 
 
 /*
