@@ -1,5 +1,3 @@
-import { async } from "regenerator-runtime";
-
 const videoContainer = document.getElementById("videoContainer");
 
 const form = document.getElementById("commentForm");
@@ -85,10 +83,14 @@ const handleThumbUp = async(event) => {
         return;
     }
     if (response.status === 201) {
-        const { result, count } = await response.json();
+        const { result, count, swap } = await response.json();
         if (result === "add") {
             thumbUp.style.backgroundColor = "blue";
+            thumbDown.style.backgroundColor = "gray";
             thumbUpCount.innerText = count;
+            if (swap) {
+                thumbDown.innerText -= 1;
+            }
         }
         if (result === "remove") {
             thumbUp.style.backgroundColor = "gray";
@@ -109,10 +111,14 @@ const handleThumbDown = async(event) => {
         return;
     }
     if (response.status === 201) {
-        const { result, count } = await response.json();
+        const { result, count, swap } = await response.json();
         if (result === "add") {
             thumbDown.style.backgroundColor = "blue";
+            thumbUp.style.backgroundColor = "gray";
             thumbDownCount.innerText = count;
+            if (swap) {
+                thumbUp.innerText -= 1;
+            }
         }
         if (result === "remove") {
             thumbDown.style.backgroundColor = "gray";

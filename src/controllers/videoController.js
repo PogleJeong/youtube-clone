@@ -37,14 +37,16 @@ export const watch = async (req, res) => {
   // req 는 URL (/video/:id)에서 받은 변수정보를 담음.
   const { id } = req.params;
   // 비디오의 정보 + 해당 비디오의 작성자 닉네임 불러오기(ref 된 model 에서 가져올 정보)
-  const video = await Video.findById(id).populate("owner").populate("comment");
+  const video = await Video.findById(id)
+                      .populate("owner")
+                      .populate({path:"comment", model: "Comment", populate: {path: "owner", model: "User"}});
   console.log(video);
   
   if (video) {
     return res.render("watch", { pageTitle: video.title, video});
-  } 
+  }
   return res.status(404).render("404", { pageTitle: "Video not found"});
-  };
+};
 
 export const getEdit = async (req, res) => {
   const { id } = req.params;
@@ -227,13 +229,13 @@ export const removeComment = async(req, res) => {
 
 /** 좋아요버튼 */
 export const thumbUp = async(req, res) => {
+  let swap = false; // 좋아요, 싫어요 두 버튼을 누를경우;
   const { 
     session: { user },
     params: { id },
   } = req;
-  // 로그인 상태가 아닌경우
-  console.log("thumb!!!");
 
+  // 로그인 상태가 아닌경우
   if (!user) {
     res.flash("error", "로그인 후 사용하실 수 있습니다.")
   }
@@ -243,30 +245,32 @@ export const thumbUp = async(req, res) => {
     return res.sendstatus(404);
   };
 
+  // 싫어요를 눌렀지만 좋아요를 누를 경우
+  if (video.meta.thumbDown.includes(user._id)) {
+    video.meta.thumbDown.remove(user._id);
+    swap = true;
+  }
+
   // 이미 좋아요 누른적이 있을경우
   if (video.meta.thumbUp.includes(user._id)) {
-    console.log("비디오 좋아요 해제", video.meta.thumbUp);
     video.meta.thumbUp.remove(user._id);
-    console.log("비디오 좋아요 개수", video.meta.thumbUp);
     video.save();
     return res.status(201).json({result: "remove", count: video.meta.thumbUp.length});
   }
   video.meta.thumbUp.push(user._id);
-  console.log("비디오 좋아요 추가");
   video.save();
-  console.log("비디오 좋아요 개수", video.meta.thumbUp);
-  return res.status(201).json({result: "add", count: video.meta.thumbUp.length});
+  return res.status(201).json({result: "add", count: video.meta.thumbUp.length, swap});
 }
 
 /** 싫어요버튼 */
 export const thumbDown = async(req, res) => {
+  let swap = false;
   const { 
     session: { user },
     params: { id },
   } = req;
 
   // 로그인 상태가 아닌경우
-  console.log("thumb!!!");
   if (!user) {
     res.flash("error", "로그인 후 사용하실 수 있습니다.")
   }
@@ -276,17 +280,20 @@ export const thumbDown = async(req, res) => {
     res.flash("error", "해당 비디오를 찾을 수가 없습니다.")
     return res.sendstatus(404);
   };
+
+  // 좋아요를 눌렀지만 싫어요를 누를 경우
+  if (video.meta.thumbUp.includes(user._id)) {
+    video.meta.thumbUp.remove(user._id);
+    swap = true;
+  }
 
   // 이미 싫어요 누른적이 있을경우
   if (video.meta.thumbDown.includes(user._id)) {
     video.meta.thumbDown.remove(user._id);
     video.save();
-    console.log("비디오 싫어요 개수", video.meta.thumbDown);
-    return res.status(201).json({result: "remove", count: video.meta.thumbDown.length});
+    return res.status(201).json({result: "remove", count: video.meta.thumbDown.length, swap});
   }
   video.meta.thumbDown.push(user._id);
-  console.log("비디오 싫어요 추가");
   video.save();
-  console.log("비디오 싫어요 개수", video.meta.thumbUp);
   return res.status(201).json({result: "add", count: video.meta.thumbDown.length});
 }

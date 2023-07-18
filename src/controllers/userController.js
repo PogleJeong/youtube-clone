@@ -63,8 +63,8 @@ export const postLogin = async (req, res) => {
 }
 
 export const logout = (req, res) => {
-    req.session.destroy(); // 세션연결끊기
     req.flash("info", "Bye Bye");
+    req.session.destroy(); // 세션연결끊기
     return res.redirect("/");
 }
 

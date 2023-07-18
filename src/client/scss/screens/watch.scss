@@ -1,13 +1,16 @@
 .video__title {
   font-size: 2em;
-  margin-top: 10px;
+  margin-top: 20px 5px;
+  height: 50px;
+  line-height: 50px;
+  padding: 5px;
 }
 
 #video-header__container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding: 20px 0px;
   
   margin-bottom: 10px;
   .video-header {
@@ -29,13 +32,22 @@
       min-height: 50px;
       margin-left: 30px;
       img {
-        width: 30px;
-        height: 30px;
+        width: 20px;
+        height: 20px;
         border-radius: 100px;
       }
       small {
         margin-left: 10px;
       }
+    }
+    .video__options {
+      min-width: 200px;
+      min-height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 100px;
+      background-color: gray;
     }
   }
   .thumb-box {
@@ -44,26 +56,34 @@
     justify-content: center;
     align-items: center;
     height: 50px;
-    width: 200px;
+    width: 150px;
     border-radius: 100px;
     padding: 10px;
     i {
       cursor: pointer;
-      margin: 10px;
+      padding: 5px;
     }
     span {
       text-align: left;
-      margin: 10px;
-      margin-right: 30px;
+      padding-left: 10px;
+      padding-right: 20px;
     }
   }
 
 }
 
 #videoSummary {
-  padding: 30px 20px;
+  padding: 10px 20px;
   background-color: gray;
   border-radius: 10px;
+  p {
+    padding: 10px 5px;
+    font-size: 1.1em;
+    font-weight: bold;
+  }
+  div {
+    padding: 10px;
+  }
 }
 
 .video__add-comments {
@@ -119,12 +139,34 @@ margin: 0 auto;
 margin-top: 20px;
     .video__comment {
         padding: 10px;
-        border-radius: 9999px;
+        max-height: 100px;
+        border-radius: 3px;
         background-color: white;
         color: black;
         margin-bottom: 10px;
-    }
-    .removeCommentBtn {
-      cursor: pointer;
+        .video__comment-header {
+          padding: 5px;
+          height: 30px;
+          i {
+            margin-right: 10px;
+          }
+          span {
+            font-size: 1em;
+            font-weight: bold;
+            margin-right: 10px;
+          }
+          .removeCommentBtn {
+            font-size: 0.8em;
+            font-weight: lighter;
+            text-decoration: underline;
+            cursor: pointer;
+          }
+        }
+        
+        .video__comment-body {
+          padding: 5px;
+        }
     }
 }
+
+

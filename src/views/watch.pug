@@ -27,18 +27,23 @@ block content
                 div
                     img#avatar(src=video.owner.avatarUrl)
                     small #{video.owner.name}
-        div.thumb-box
-            i.fas.fa-thumbs-up#thumb-up(style=`background-color:${video.meta.thumbUp.includes(loggedInUser._id) ? "blue" : "none"}`)
-            span#thumb-up__count #{video.meta.thumbUp.length}
-            i.fas.fa-thumbs-down#thumb-down(style=`background-color:${video.meta.thumbDown.includes(loggedInUser._id) ? "blue" : "none"}`)
-            span#thumb-down__count #{video.meta.thumbDown.length}
+        if loggedIn && String(video.owner._id) === String(loggedInUser._id)
+            div.video__options
+                a(href=`${video.id}/edit`) 수정하기 &rarr;
+                a(href=`${video.id}/delete`) 삭제하기 &rarr;
+                
+
+        if loggedIn
+            div.thumb-box
+                i.fas.fa-thumbs-up#thumb-up(style=`background-color:${video.meta.thumbUp.includes(loggedInUser._id) ? "blue" : "none"}`)
+                span#thumb-up__count #{video.meta.thumbUp.length}
+                i.fas.fa-thumbs-down#thumb-down(style=`background-color:${video.meta.thumbDown.includes(loggedInUser._id) ? "blue" : "none"}`)
+                span#thumb-down__count #{video.meta.thumbDown.length}
     div#videoSummary
-        small=video.createdAt 
-        p=video.description
-    if String(video.owner._id) === String(loggedInUser._id)
-        a(href=`${video.id}/edit`) Edit Video &rarr;
-        br
-        a(href=`${video.id}/delete`) Delete Video &rarr;
+        p=video.createdAt.toLocaleString('ko-KR', { timeZone: 'UTC' })
+        div
+            span=video.description
+    
     if loggedIn
         div.video__add-comments
             form.video__comment-form#commentForm
@@ -48,10 +53,13 @@ block content
         ul 
             each comment in video.comment 
                 li.video__comment(data-id=comment.id)
-                    i.fas.fa-comment 
-                    span  #{comment.text}
-                    if String(video.owner._id) === String(loggedInUser._id) 
-                        span.removeCommentBtn ⓧ
+                    div.video__comment-header
+                        i.fas.fa-comment 
+                        span #{comment.owner.name}
+                        if loggedIn && String(video.owner._id) === String(loggedInUser._id) 
+                            span.removeCommentBtn 댓글삭제
+                    div.video__comment-body
+                        span #{comment.text}
         
 
 block scripts 

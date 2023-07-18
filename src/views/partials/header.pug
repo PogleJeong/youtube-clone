@@ -1,30 +1,41 @@
 header
     a(href="/").header__logo
         i.fab.fa-youtube
-    nav 
-        ul 
-            li 
-                a(href="/search")
-                    i.fas.fa-search
-            if loggedIn
-                li 
-                    a(href="/users/edit") Edit Profile
-                li 
-                    a(href="/videos/upload") Upload Video <!-- post -->
-                li 
-                    a(href="/users/logout") Logout 
-                li 
-                    a(href=`/users/${loggedInUser._id}`) 
-                        if loggedInUser.avatarUrl === ""
-                            span ☆☆☆
-                        else 
-                            img.header__avatar(src=`${loggedInUser.avatarUrl}`)
+    div.search-bar 
+        form(method="GET")
+            input(placeholder="Search by title", type="text", name="keyword")
+            button 
+                i.fas.fa-search
+    div.nav__container.flex-box-center
+        div
+            span.open
+            i.fas.fa-clipboard-list#nav__btn
+        nav#nav__bar.close
+            ul 
+                if loggedIn
+                    li.flex-box-center 
+                        a(href=`/users/${loggedInUser._id}`) 
+                            div.flex-box-center#nav__profile
+                                if loggedInUser.avatarUrl === "" || !loggedInUser.avatarUrl
+                                    span ☆☆☆
+                                else 
+                                    img.header__avatar(src=`${loggedInUser.avatarUrl}`)
+                                span #{loggedInUser.name}
+                    hr
+                    li.flex-box-center
+                        a(href="/users/edit") Edit Profile
+                    li.flex-box-center
+                        a(href="/videos/upload") Upload Video <!-- post -->
+                    hr
+                    li.flex-box-center 
+                        a(href="/users/logout") Logout 
 
-            else
-                li 
-                    a(href="/join") Join
-                li 
-                    a(href="/login").header__btn Login 
-            
-            li 
-                a(href="/search") Search      
+                else
+                    li.flex-box-center 
+                        span 로그인이 필요합니다.
+                    hr
+                    li.flex-box-center  
+                        a(href="/join") Join
+                    li.flex-box-center  
+                        a(href="/login").header__btn Login 
+    script(src="/static/js/header.js")
