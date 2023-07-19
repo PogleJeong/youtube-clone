@@ -1,0 +1,21 @@
+.login__form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 200px;
+    width: 300px;
+    padding: 20px;
+    input {
+        margin-bottom: 10px;
+        &:focus {
+            background-color: aliceblue;
+            color: black;
+        }
+    }
+}
+.auth-switch {
+    a:hover {
+        color: $accentColor;
+    }
+}

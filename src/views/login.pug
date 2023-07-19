@@ -4,7 +4,7 @@ block content
     if (errorMessage)
         span=errorMessage
 
-    form(method="POST" action="/login")
+    form(method="POST" action="/login").login__form
         input(placeholder="Username", name="username", type="text", required)
         input(placeholder="Password", name="password", type="password", required)
         button.submitBtn Login !

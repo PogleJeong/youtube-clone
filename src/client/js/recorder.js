@@ -27,6 +27,10 @@ const downloadFile = (fileUrl, fileName) => {
 
 // 비디오 미리보기 기능. 웹캠 등 필요
 const init = async() => {
+    // 웹캠 존재여부
+    if(!navigator.mediaDevices.ondevicechange) {
+        return;
+    }
     stream = await navigator.mediaDevices.getUserMedia({
         audio: true, 
         video: {
@@ -39,6 +43,10 @@ const init = async() => {
 };
 
 const handleSelfRecorderBtn = () => {
+    if(!navigator.mediaDevices.ondevicechange) {
+        alert("녹화할 기기가 존재하지 않습니다.");
+        return;
+    }
     videoContainer.classList.toggle("showing");
 };
 

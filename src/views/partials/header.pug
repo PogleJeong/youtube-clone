@@ -7,9 +7,13 @@ header
             button 
                 i.fas.fa-search
     div.nav__container.flex-box-center
-        div
-            span.open
-            i.fas.fa-clipboard-list#nav__btn
+        div#nav__btn.flex-box-center
+            if loggedIn 
+                span.open Menu
+                img.header__avatar(src=`${loggedInUser.avatarUrl}`)
+            else
+                span.open Menu
+                i.fas.fa-clipboard-list
         nav#nav__bar.close
             ul 
                 if loggedIn
@@ -37,5 +41,5 @@ header
                     li.flex-box-center  
                         a(href="/join") Join
                     li.flex-box-center  
-                        a(href="/login").header__btn Login 
+                        a(href="/login") Login 
     script(src="/static/js/header.js")
