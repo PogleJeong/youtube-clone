@@ -71,17 +71,31 @@
     }
     #uploadBtn {
         background-color: aliceblue;
-        width: 30%;
+        width: 100px;
+        margin: 10px;
         color: black;
         text-align: center;
         cursor: pointer;
-        font-weight: bold;
         scale: 1;
         transition: scale 1s, color 0.1s;
         &:hover {
             scale: 1.1;
             color: $accentColor;
             
+        }
+    }
+    #cancelBtn {
+        background-color: rgb(221, 231, 80);
+        width: 100px;
+        margin: 10px;
+        color: black;
+        text-align: center;
+        cursor: pointer;
+        scale: 1;
+        transition: scale 1s, color 0.1s;
+        &:hover {
+            scale: 1.1;
+            color: $accentColor;
         }
     }
 }

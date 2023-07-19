@@ -63,7 +63,7 @@ export const getEdit = async (req, res) => {
     req.flash("error", "Your are not the owner of the video.");
     return res.status(403).redirect("/");
   }
-  return res.render("edit", {pageTitle: `Edit ${ video.title }`});
+  return res.render("edit", {pageTitle: `Edit ${ video.title }`, video});
   };
 
 // video 수정
@@ -71,8 +71,8 @@ export const postEdit = async (req, res) => {
   const { id } = req.params;
   const { title, description, hashtags } = req.body;
   const video = await Video.exists({_id: id}); //or await Video.findById(id);
-  if (video) {
 
+  if (video) {
     await Video.findByIdAndUpdate(id, { // ID를 통해 데이터를 찾고 업데이트
       title, 
       description, 
@@ -158,7 +158,7 @@ export const search = async (req, res) => {
   if (keyword) { // keyword 가 입력되면 실행
       videos = await Video.find({
         title: {
-          $regex: new RegExp(`${keyword}$`, "i"), // 정규식 사용 할 수 있게 해줌
+          $regex: new RegExp(`(${keyword})`, "i"), // 정규식 사용 할 수 있게 해줌
       }, // where title = keyword
     }).populate("owner");
   }
@@ -184,7 +184,7 @@ export const writeComment = async(req, res) => {
   } = req;
 
   const video = await Video.findById(id);
-
+  const userInfo = await User.findById(user._id);
   if (!video) {
     return res.sendStatus(404);
   };
@@ -197,7 +197,7 @@ export const writeComment = async(req, res) => {
 
   video.comment.push(comment._id);
   video.save();
-  return res.status(201).json({newCommentId: comment._id}); // reponse 에 json 데이터 발송
+  return res.status(201).json({newCommentId: comment._id, username: userInfo.name}); // reponse 에 json 데이터 발송
 }
 
 export const removeComment = async(req, res) => {
@@ -207,7 +207,7 @@ export const removeComment = async(req, res) => {
   } = req;
 
   const comment1 = await Comment.findById(comment_id);
-  
+  console.log(comment1);
   if ( String(user._id) !== String(comment1.owner._id)) {
     return res.sendStatus(404);
   }

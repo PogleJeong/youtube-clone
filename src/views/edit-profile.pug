@@ -1,22 +1,29 @@
 extends base.pug
 
 block content
-    div#avatarContainer
-        img(src="/" + loggedInUser.avatarUrl)
-        if errorMessage 
-            small #{errorMessage}
-    form(method="POST", enctype="multipart/form-data").edit-profile__form
-        label(for="avatar") My Profile 
-        input(type="file", id="avatar", name="avatar", accept="image/*")
-        input(placeholder="Name", name="name", type="text" value=loggedInUser.name required )
-        input(placeholder="Email", name="email", type="email" value=loggedInUser.email required )
-        input(placeholder="Username", name="username", type="text" value=loggedInUser.username required )
-        input(placeholder="Location", name="location", type="text" value=loggedInUser.location required )
-        input(value="Update Profile", type="submit" )#updateBtn
+    
+    p 나의 프로필
+    form(method="POST", enctype="multipart/form-data").edit-profile__form.flex-box-center
+        div#avatarContainer.flex-box-center-column
+            img(src=`${loggedInUser.avatarUrl}`)
+            label(for="avatar__input") 아바타 선택
+            input(type="file", name="avatar", accept="image/*")#avatar__input
+            if errorMessage 
+                small #{errorMessage} 
+        div#userInfoContainer.flex-box-center-column
+            p Name
+            input(placeholder="Name", name="name", type="text" value=loggedInUser.name required )
+            p E-mail
+            input(placeholder="Email", name="email", type="email" value=loggedInUser.email required )
+            p Username
+            input(placeholder="Username", name="username", type="text" value=loggedInUser.username required )
+            p Location
+            input(placeholder="Location", name="location", type="text" value=loggedInUser.location required )
+            input(value="Update", type="submit")#updateBtn
         // social 로그인 계정인 경우 비밀번호 변경 
-        if loggedInUser.socialOnly
-            div.edit-profile__password
-            a(href="change-password") Change Password &rarr;
+    if loggedInUser.socialOnly
+        div.edit-profile__password
+            a(href="change-password") 비밀번호 변경하기 &rarr;
 
 block scripts 
     script(src="/static/js/main.js")

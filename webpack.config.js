@@ -10,6 +10,7 @@ module.exports = {
     recorder: BASE_JS + "recorder.js",
     commentSection: BASE_JS + "commentSection.js",
     header: BASE_JS + "header.js",
+    edit: BASE_JS + "edit.js",
   },
     mode: "development",
   watch: true,

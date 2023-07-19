@@ -1,20 +1,54 @@
-#avatarContainer {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    width: 482px;
-    margin: 0 auto;
-    img {
-        width: 150px;
-        height: 150px;
-    }
-}
-
 .edit-profile__form {
+    min-width: 600px;
     label {
         display: block;
         font-size: 1.2em;
         font-weight: bold;
         margin-bottom: 10px;
+    }
+    #avatarContainer {
+        margin: 25px;
+        img {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 30px;
+        }
+        label {
+            border: 2px solid white;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            &:hover {
+                border-color: $accentColor;
+                color: $accentColor;
+            }
+        }
+        #avatar__input {
+            display: none;
+        }
+    }
+    #userInfoContainer {
+        width: 60%;
+        padding: 0px 20px;
+        p {
+            width: 100%;
+            text-align: left;
+            padding-bottom: 10px;
+        }
+        input {
+            height: 20px;
+            margin-bottom: 10px;
+        }
+        #updateBtn {
+            width: 20%;
+            margin-top: 25px;
+            text-align: center;
+            cursor: pointer;
+            &:hover {
+                background-color: $submitBtn;
+                color:white;
+            }
+        }
     }
 }
 

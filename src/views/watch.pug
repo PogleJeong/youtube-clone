@@ -40,7 +40,9 @@ block content
                 i.fas.fa-thumbs-down#thumb-down(style=`background-color:${video.meta.thumbDown.includes(loggedInUser._id) ? "blue" : "none"}`)
                 span#thumb-down__count #{video.meta.thumbDown.length}
     div#videoSummary
-        p=video.createdAt.toLocaleString('ko-KR', { timeZone: 'UTC' })
+        div
+            p 조회수 #{video.meta.views}회
+            p 업로드 일자 - #{video.createdAt.toLocaleString('ko-KR', { timeZone: 'UTC' })}
         div
             span=video.description
     
@@ -52,7 +54,7 @@ block content
     div.video__comments 
         ul 
             each comment in video.comment 
-                li.video__comment(data-id=comment.id)
+                li.video__comment(data-id=comment._id)
                     div.video__comment-header
                         i.fas.fa-comment 
                         span #{comment.owner.name}

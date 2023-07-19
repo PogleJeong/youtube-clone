@@ -126,7 +126,7 @@ export const postEdit = async (req, res) => {
       { new: true }
     );
     req.session.user = updatedUser; // DB 업데이트 이후 세션도 바꿔주어야함.
-    return res.redirect("/users/edit");
+    return res.redirect("/");
 };
 
 // github 로그인을 위한 컨트롤러 (뷰에서 직접링크하지 않고 컨트롤러에서 이동)

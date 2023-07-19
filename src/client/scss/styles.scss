@@ -80,3 +80,10 @@ main {
         cursor: pointer;
     }
 }
+
+.flex-box-center-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

@@ -10,22 +10,38 @@ const thumbDownCount = document.getElementById("thumb-down__count");
 
 
 
-const addComment = (text, newCommentId) => {
+const addComment = (text, newCommentId, username) => {
     const videoComments = document.querySelector(".video__comments ul");
     const newComment = document.createElement("li");
     newComment.className = "video__comment";
-    newComment.dataset.id = newCommentId
+    newComment.dataset.id = newCommentId;
+
+    // comment header
+    const divHeader = document.createElement("div");
+    divHeader.className = "video__comment-header";
+
     const icon = document.createElement("i");
     icon.className = "fas fa-comment";
-    const span = document.createElement("span");
-    const span2 = document.createElement("span");
-    span2.className = "removeCommentBtn";
-    span2.addEventListener("click", handleRemove);
-    span.innerText = ` ${text}`;
-    span2.innerText = "ⓧ";
-    newComment.appendChild(icon);
-    newComment.appendChild(span);
-    newComment.appendChild(span2);
+    const span_name = document.createElement("span");
+    const span_delete = document.createElement("span");
+    span_delete.className = "removeCommentBtn";
+    span_delete.addEventListener("click", handleRemove);
+    span_name.innerText = username //이름
+    span_delete.innerText = "댓글삭제";
+    divHeader.appendChild(icon);
+    divHeader.appendChild(span_name);
+    divHeader.appendChild(span_delete);
+
+    // comment body
+    const divBody = document.createElement("div");
+    divBody.className = "video__comment-body";
+    const span_content = document.createElement("span");
+    span_content.innerText = text;
+    divBody.append(span_content);
+
+    // comment box 에 추가
+    newComment.appendChild(divHeader);
+    newComment.appendChild(divBody);
 
     videoComments.prepend(newComment);
 }
@@ -48,16 +64,17 @@ const handleSubmit = async(event) => {
     textarea.value = "";
 
     if (response.status === 201) {
-        const { newCommentId } = await response.json();
-        addComment(text, newCommentId);
+        const { newCommentId, username } = await response.json();
+        addComment(text, newCommentId, username);
     }
 };
 
 const handleRemove = async(event) => {
     event.preventDefault();
-    const commentBox = event.target.parentNode;
+    const commentBox = event.target.parentNode.parentNode;
     const comment_id = commentBox.dataset.id;
     const video_id = videoContainer.dataset.id;
+
     const response = await fetch(`/api/videos/${video_id}/remove/comment`, {
         method: "DELETE",
         headers: {

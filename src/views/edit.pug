@@ -1,14 +1,22 @@
 extends base
 
 block content
-    form(method="POST", enctype="multipart/form-data")
-        label(for="avatar") Avatar
-        input(type="file", id="avatar", name="avatar", accept="image/*")
-        input(placeholder="Name", name="name", type="text", required, value=loggedInUser.name)
-        input(placeholder="Email", name="email", type="email", required, value=loggedInUser.email)
-        input(placeholder="Username", name="username", type="text", required, value=loggedInUser.username)
-        input(placeholder="Location", name="location", type="text", required, value=loggedInUser.location)
-        input(type="submit", value="Update Profile")
+    form(method="POST", enctype="multipart/form-data").upload__form
+        p Video File | 영상파일
+        input(type="file", accept="video/*", required, id="video", name="video" ,value=video.videoUrl)
+        p Thumbnail File | 썸네일
+        input(type="file" accept="image/*", required, id="thumbnail", name="thumbnail", value=video.thumbnailUrl)
+        p Title | 제목
+        input(placeholder="Title", required, type="text", name="title", value=video.title) 
+        p Description | 영상설명
+        textarea(placeholder="Description", required, type="text", name="description")
+            | #{video.description}
+        p Hashtags | 해시태그
+        input(placeholder="Hashtags, separated by comma.", required, type="text", name="hashtags", value=video.hashtags.map((tag)=>tag.replace("#","")))  
+        div.flex-box-center
+            input(type="submit", value="Update")#uploadBtn
+            a(href=`/videos/${video._id}`) 
+                input(type="button", value="Cancel")#cancelBtn
 
 block scripts 
-    script(src="/static/js/main.js")
+    script(src="/static/js/edit.js")

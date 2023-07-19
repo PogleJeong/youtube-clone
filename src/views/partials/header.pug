@@ -1,9 +1,10 @@
 header
-    a(href="/").header__logo
-        i.fab.fa-youtube
+    div.flex-box-center
+        a(href="/").header__logo
+            i.fab.fa-youtube
     div.search-bar 
-        form(method="GET")
-            input(placeholder="Search by title", type="text", name="keyword")
+        form(method="GET", action="/videos/search")
+            input(placeholder="Search by title", type="text", name="keyword", id="keyword")
             button 
                 i.fas.fa-search
     div.nav__container.flex-box-center
