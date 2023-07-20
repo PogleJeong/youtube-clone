@@ -25,7 +25,7 @@ block content
         div.video-header
             a(href=`/users/${video.owner._id}`) 
                 div
-                    img#avatar(src=video.owner.avatarUrl)
+                    img#avatar(src=`/${video.owner.avatarUrl}`)
                     small #{video.owner.name}
         if loggedIn && String(video.owner._id) === String(loggedInUser._id)
             div.video__options
@@ -60,6 +60,7 @@ block content
                         span #{comment.owner.name}
                         if loggedIn && String(video.owner._id) === String(loggedInUser._id) 
                             span.removeCommentBtn 댓글삭제
+                            span.updateCommentBtn 댓글수정
                     div.video__comment-body
                         span #{comment.text}
         

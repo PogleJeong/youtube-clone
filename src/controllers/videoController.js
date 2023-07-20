@@ -200,29 +200,63 @@ export const writeComment = async(req, res) => {
   return res.status(201).json({newCommentId: comment._id, username: userInfo.name}); // reponse 에 json 데이터 발송
 }
 
-export const removeComment = async(req, res) => {
+export const updateComment = async(req, res) => {
   const {
     session: { user },
-    body: { comment_id }
+    body: { comment_id, video_id, content }
   } = req;
 
-  const comment1 = await Comment.findById(comment_id);
-  console.log(comment1);
-  if ( String(user._id) !== String(comment1.owner._id)) {
+  if ( String(user._id) !== String(updatedComment.owner._id)) {
     return res.sendStatus(404);
   }
 
-  const comment2 = await Comment.findByIdAndDelete(comment_id);
+  const updatedComment = await Comment.findByIdAndUpdate(
+    comment_id,
+    {
+      text: content,
+    }
+  );
+  if (!updatedComment) {
+    res.flash("error", "댓글 수정에 실패하였습니다.");
+    return res.sendStatus(404);
+  }
 
-  if (!comment1) {
+  const video = await Video.findById(video_id);
+  if (!video) {
+    res.flash("error", "해당 댓글이 존재하는 동영상 정보가 없습니다.");
+    return res.sendStatus(404);
+  }
+  video.comment.remove(comment_id)
+  video.save();
+
+  return res.sendStatus(201);
+}
+
+export const removeComment = async(req, res) => {
+  const {
+    session: { user },
+    body: { comment_id, video_id }
+  } = req;
+
+  if ( String(user._id) !== String(comment1.owner._id)) {
     res.flash('error', '해당 댓글 삭제권한이 없습니다.');
     return res.sendStatus(404);
+  }
+  
+  const comment1 = await Comment.findById(comment_id);
+
+  if (!comment1) {
+    res.flash("error", "해당 댓글이 존재하지 않습니다.")
+    return res.sendStatus(404);
   };
+
+  const comment2 = await Comment.findByIdAndDelete(comment_id);
 
   if (!comment2) {
     res.flash('error', '댓글이 삭제되지 않았습니다.');
     return res.sendStatus(404);
   };
+
 
   return res.sendStatus(201);
 }
