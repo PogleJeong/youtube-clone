@@ -11,6 +11,7 @@ module.exports = {
     commentSection: BASE_JS + "commentSection.js",
     header: BASE_JS + "header.js",
     edit: BASE_JS + "edit.js",
+    editProfile: BASE_JS + "edit-profile.js",
   },
     mode: "development",
   watch: true,

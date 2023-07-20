@@ -5,7 +5,7 @@ block content
     p 나의 프로필
     form(method="POST", enctype="multipart/form-data").edit-profile__form.flex-box-center
         div#avatarContainer.flex-box-center-column
-            img(src=`${loggedInUser.avatarUrl}`)
+            img(src=`/${loggedInUser.avatarUrl}`)
             label(for="avatar__input") 아바타 선택
             input(type="file", name="avatar", accept="image/*")#avatar__input
             if errorMessage 
@@ -26,4 +26,4 @@ block content
             a(href="change-password") 비밀번호 변경하기 &rarr;
 
 block scripts 
-    script(src="/static/js/main.js")
+    script(src="/static/js/editProfile.js")
