@@ -4,8 +4,9 @@ export const getJoin = (req, res) => {
     res.render("join", {pageTitle: "Join"});
 }
 export const postJoin = async (req, res) => {
-    const { name, username, email, password, password2, location } = req.body;
+    const { avatarUrl, name, username, email, password, password2, location } = req.body;
     const pageTitle = "Join";
+    const baseAvatarUrl = "uploads/avatars/baseProfile.jpg";
     // 비밀번호 확인
     // res.status(status code) 크롬의 저장여부는 code 200일때 계속 발생하므로 막기위함
     if (password !== password2) {
@@ -24,6 +25,7 @@ export const postJoin = async (req, res) => {
         });
     };
     await User.create({
+        avatarUrl: avatarUrl || baseAvatarUrl,
         name,
         username,
         email,

@@ -1,0 +1,57 @@
+.join__form {
+    min-width: 1000px;
+    min-width: 600px;
+
+    #join-container__avatar {
+        width: 40%;
+        label{
+            display: block;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding: 20px;
+            border: 2px solid white;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            &:hover {
+                border-color: $accentColor;
+                color: $accentColor;
+            }
+        }
+        img {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 20px;
+            border-radius: 100px;
+        }
+        input {
+            display: none;
+        }
+    }
+    #join-container__info {
+        width: 100%;
+        padding: 20px;
+        width: 60%;
+        padding: 0px 20px;
+        p {
+            width: 100%;
+            text-align: left;
+            padding-bottom: 10px;
+        }
+        input {
+            height: 20px;
+            margin-bottom: 10px;
+        }
+        #join__btn {
+            width: 20%;
+            margin-top: 25px;
+            text-align: center;
+            cursor: pointer;
+            &:hover {
+                background-color: $submitBtn;
+                color:white;
+            }
+        }
+    }
+}
