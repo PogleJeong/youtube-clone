@@ -1,4 +1,3 @@
-import { async } from "regenerator-runtime";
 import User from "../models/User";
 import Video from "../models/Video"; // DB MODEL 사용
 import Comment from "../models/Comment";
@@ -82,14 +81,6 @@ export const postEdit = async (req, res) => {
     return res.render(`/videos/${id}`);
   };
   
-  /*
-    video.title = title;
-    video.description = description;
-    video.hashtags = hashtags // 안에 해시태그가 있다면 추가하지 않고 없으면 추가함.
-      .split(",")
-      .map((word) => 
-      word.startWith("#") ? word : `#${word}`);
-  */
   return res.render("404", { pageTitle: "Video not found"})
 };
 
@@ -101,8 +92,7 @@ export const postUpload = async (req, res) => {
   const { user : { _id } } = req.session;
   const { video, thumbnail } = req.files; // multer
   const { title, description, hashtags } = req.body;
-  console.log(video);
-  console.log(thumbnail);
+
   try {
     // 1. video model 에 data 넣기
     const newVideo = await Video.create({ // creates Video data model / promise / save into DB
@@ -120,7 +110,8 @@ export const postUpload = async (req, res) => {
     // 2. User model 에 video 정보 추가하기
     const user = await User.findById(_id);
     user.videos.push(newVideo._id);
-    user.save(); // -> 버그 해결(영상업로드시 해당 계정 비밀번호해싱발생)
+    await user.save(); // -> 버그 해결(영상업로드시 해당 계정 비밀번호해싱발생)
+
     return res.redirect("/");
   } catch (error) { // error 출력 error에서 _message 를 통해 간략한 에러사항을 알 수 있음.
     console.log(error);
@@ -129,6 +120,7 @@ export const postUpload = async (req, res) => {
  
 };
 
+/** 동영상 삭제 */
 export const deleteVideo = async (req, res) => {
   const { id } = req.params;
   const { user: { _id }} = req.session;
@@ -141,17 +133,18 @@ export const deleteVideo = async (req, res) => {
     });
   }
   // 2. 지우고자하는 영상의 소유자인가
-  if (String(video.owner)!==String(_id)) {
+  if (String(video.owner) !== String(_id)) {
     return res.status(403).redirect("/");
   }
   
-  // delete
+  // 3. DB delete
   await Video.findByIdAndDelete(id);
+
   return res.redirect("/");
 };
 
 export const search = async (req, res) => {
-  //GET request 에서 ? param값 가져오기
+  // GET request 에서 ? param값 가져오기
   const { keyword } = req.query;
   let videos = [];
   
@@ -165,12 +158,22 @@ export const search = async (req, res) => {
   return res.render("search", { pageTitle: "Search", videos});
 }
 
+export const searchByHashtag = async(req, res) => {
+  const { hashtag } = req.params;
+  const videos = await Video.find({
+    hashtags: `#${hashtag}`,
+  })
+
+  return res.render("search", { pageTitle: `Search By ${hashtag}`, videos})
+}
+
 export const registerView = async(req, res) => {
   const { id } = req.params;
   const video = await Video.findById(id);
   if (!video) {
     return res.sendStatus(404); //랜더링 없이 api 요청
   }
+
   video.meta.views = video.meta.views + 1;
   await video.save();
   return res.sendStatus(200);
@@ -196,7 +199,7 @@ export const writeComment = async(req, res) => {
   });
 
   video.comment.push(comment._id);
-  video.save();
+  await video.save();
   return res.status(201).json({newCommentId: comment._id, username: userInfo.name}); // reponse 에 json 데이터 발송
 }
 
@@ -206,16 +209,18 @@ export const updateComment = async(req, res) => {
     body: { comment_id, video_id, content }
   } = req;
 
-  if ( String(user._id) !== String(updatedComment.owner._id)) {
-    return res.sendStatus(404);
-  }
-
   const updatedComment = await Comment.findByIdAndUpdate(
     comment_id,
     {
       text: content,
     }
   );
+
+  if ( String(user._id) !== String(updatedComment.owner._id)) {
+    return res.sendStatus(404);
+  }
+
+
   if (!updatedComment) {
     res.flash("error", "댓글 수정에 실패하였습니다.");
     return res.sendStatus(404);
@@ -226,8 +231,6 @@ export const updateComment = async(req, res) => {
     res.flash("error", "해당 댓글이 존재하는 동영상 정보가 없습니다.");
     return res.sendStatus(404);
   }
-  video.comment.remove(comment_id)
-  video.save();
 
   return res.sendStatus(201);
 }
@@ -238,12 +241,13 @@ export const removeComment = async(req, res) => {
     body: { comment_id, video_id }
   } = req;
 
+  const comment1 = await Comment.findById(comment_id);
+  
   if ( String(user._id) !== String(comment1.owner._id)) {
     res.flash('error', '해당 댓글 삭제권한이 없습니다.');
     return res.sendStatus(404);
   }
   
-  const comment1 = await Comment.findById(comment_id);
 
   if (!comment1) {
     res.flash("error", "해당 댓글이 존재하지 않습니다.")
@@ -257,7 +261,10 @@ export const removeComment = async(req, res) => {
     return res.sendStatus(404);
   };
 
-
+  // video model 의 comment collection 에서 해당 comment 삭제
+  const video = await Video.findById(video_id);
+  video.comment.remove(comment_id);
+  await video.save()
   return res.sendStatus(201);
 }
 
@@ -288,11 +295,11 @@ export const thumbUp = async(req, res) => {
   // 이미 좋아요 누른적이 있을경우
   if (video.meta.thumbUp.includes(user._id)) {
     video.meta.thumbUp.remove(user._id);
-    video.save();
+    await video.save();
     return res.status(201).json({result: "remove", count: video.meta.thumbUp.length});
   }
   video.meta.thumbUp.push(user._id);
-  video.save();
+  await video.save();
   return res.status(201).json({result: "add", count: video.meta.thumbUp.length, swap});
 }
 
@@ -324,10 +331,10 @@ export const thumbDown = async(req, res) => {
   // 이미 싫어요 누른적이 있을경우
   if (video.meta.thumbDown.includes(user._id)) {
     video.meta.thumbDown.remove(user._id);
-    video.save();
-    return res.status(201).json({result: "remove", count: video.meta.thumbDown.length, swap});
+    await video.save();
+    return res.status(201).json({result: "remove", count: video.meta.thumbDown.length});
   }
   video.meta.thumbDown.push(user._id);
-  video.save();
-  return res.status(201).json({result: "add", count: video.meta.thumbDown.length});
+  await video.save();
+  return res.status(201).json({result: "add", count: video.meta.thumbDown.length, swap});
 }

@@ -12,6 +12,7 @@ module.exports = {
     header: BASE_JS + "header.js",
     edit: BASE_JS + "edit.js",
     editProfile: BASE_JS + "edit-profile.js",
+    watch: BASE_JS + "watch.js",
   },
     mode: "development",
   watch: true,

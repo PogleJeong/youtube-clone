@@ -1,7 +1,7 @@
 extends base
 
 block content
-    form(method="POST", enctype="multipart/form-data").upload__form
+    form(method="POST", enctype="multipart/form-data" action="edit").upload__form
         p Video File | 영상파일
         input(type="file", accept="video/*", required, id="video", name="video" ,value=video.videoUrl)
         p Thumbnail File | 썸네일
@@ -12,7 +12,7 @@ block content
         textarea(placeholder="Description", required, type="text", name="description")
             | #{video.description}
         p Hashtags | 해시태그
-        input(placeholder="Hashtags, separated by comma.", required, type="text", name="hashtags", value=video.hashtags.map((tag)=>tag.replace("#","")))  
+        input(placeholder="Hashtags, separated by comma.", required, type="text", name="hashtags", value=video.hashtags.map((tag)=>tag.replace("#","")).toString())  
         div.flex-box-center
             input(type="submit", value="Update")#uploadBtn
             a(href=`/videos/${video._id}`) 

@@ -24,7 +24,7 @@ header
                                 if loggedInUser.avatarUrl === "" || !loggedInUser.avatarUrl
                                     span ☆☆☆
                                 else 
-                                    img.header__avatar(src=`${loggedInUser.avatarUrl}`)
+                                    img.header__avatar(src=`/${loggedInUser.avatarUrl}`)
                                 span #{loggedInUser.name}
                     hr
                     li.flex-box-center

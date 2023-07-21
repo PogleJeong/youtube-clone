@@ -1,4 +1,5 @@
 extends base.pug
+include mixins/hashtag
 
 block content
     div#videoContainer(data-id=video._id)
@@ -27,21 +28,26 @@ block content
                 div
                     img#avatar(src=`/${video.owner.avatarUrl}`)
                     small #{video.owner.name}
-        if loggedIn && String(video.owner._id) === String(loggedInUser._id)
-            div.video__options
-                a(href=`${video.id}/edit`) 수정하기 &rarr;
-                a(href=`${video.id}/delete`) 삭제하기 &rarr;
-                
-
         if loggedIn
             div.thumb-box
                 i.fas.fa-thumbs-up#thumb-up(style=`background-color:${video.meta.thumbUp.includes(loggedInUser._id) ? "blue" : "none"}`)
                 span#thumb-up__count #{video.meta.thumbUp.length}
                 i.fas.fa-thumbs-down#thumb-down(style=`background-color:${video.meta.thumbDown.includes(loggedInUser._id) ? "blue" : "none"}`)
                 span#thumb-down__count #{video.meta.thumbDown.length}
+    
+    if loggedIn && String(video.owner._id) === String(loggedInUser._id)
+        div.video__options
+            span#video__updateBtn Update video
+            span#video__deleteBtn Delete video
+            a(href=`${video.id}/edit`)
+            a(href=`${video.id}/delete`) 
+    
     div#videoSummary
         div
-            p 조회수 #{video.meta.views}회
+            span 조회수 #{video.meta.views}회
+            div.hashtags-container
+                each hashtag in video.hashtags
+                    +hashtag(hashtag)
             p 업로드 일자 - #{video.createdAt.toLocaleString('ko-KR', { timeZone: 'UTC' })}
         div
             span=video.description
@@ -67,5 +73,6 @@ block content
 
 block scripts 
     script(src="/static/js/videoPlayer.js")
+    script(src="/static/js/watch.js")
     if loggedIn
         script(src="/static/js/commentSection.js")

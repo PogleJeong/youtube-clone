@@ -1,5 +1,5 @@
 import express from "express";
-import { watch, getEdit, postEdit, getUpload, postUpload, deleteVideo, search} from "../controllers/videoController";
+import { watch, getEdit, postEdit, getUpload, postUpload, deleteVideo, search, searchByHashtag} from "../controllers/videoController";
 import { protectorMiddleware, videoUpload } from "../middlewares";
 
 const videoRouter = express.Router();
@@ -19,6 +19,9 @@ videoRouter.route("/upload")
     .post(videoUpload.fields([{name: "video"},{name: "thumbnail"}]), postUpload);
 videoRouter.route("/search")
     .get(search);
+videoRouter.route("/search/hashtag/:hashtag")
+    .get(searchByHashtag);
+
 export default videoRouter;
 /* 
     :param = url 안에 변수를 포함할 수 있게 해줌. ${} 의 역할

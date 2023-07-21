@@ -32,22 +32,13 @@
       min-height: 50px;
       margin-left: 30px;
       img {
-        width: 20px;
-        height: 20px;
+        width: 30px;
+        height: 30px;
         border-radius: 100px;
       }
       small {
         margin-left: 10px;
       }
-    }
-    .video__options {
-      min-width: 200px;
-      min-height: 50px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 100px;
-      background-color: gray;
     }
   }
   .thumb-box {
@@ -84,6 +75,31 @@
   div {
     padding: 10px;
   }
+  .hashtags-container {
+    display: inline-block;
+    span {
+      margin-right: 5px;
+      a{
+        font-weight: bold;
+        color: rgb(89, 89, 236);
+      }
+    }
+  }
+}
+
+.video__options {
+  margin: 10px 0px;
+  span{
+    margin-right: 5px;
+    padding: 5px;
+    text-decoration: underline;
+    
+    &:hover {
+      color: $accentColor;
+      cursor: pointer;
+    }
+  }
+  
 }
 
 .video__add-comments {

@@ -5,10 +5,6 @@ const form = document.getElementById("commentForm");
 const textarea = form.querySelector("textarea");
 const removeCommentBtnList = document.getElementsByClassName("removeCommentBtn");
 const updateCommentBtnList = document.getElementsByClassName("updateCommentBtn");
-const thumbUp = document.getElementById("thumb-up");
-const thumbUpCount = document.getElementById("thumb-up__count");
-const thumbDown = document.getElementById("thumb-down");
-const thumbDownCount = document.getElementById("thumb-down__count");
 
 /** 댓글수정 취소 시 기존 댓글 내용을 담은 변수 */
 let previousComment;
@@ -61,6 +57,9 @@ const addComment = (text, newCommentId, username) => {
 
 /** 댓글수정 시 element 변경 */
 const handleChangeElementForUpdate = (event) => {
+    const confirm = window.confirm("댓글수정을 하시겠습니까?");
+    if (!confirm) return;
+
     const commentBox = event.target.parentNode.parentNode;
     const commentBody = commentBox.querySelector(".video__comment-body");
     const commentContentSpan = commentBody.firstChild;
@@ -98,8 +97,9 @@ const handleChangeElementForUpdate = (event) => {
     event.target.classList.toggle("display-none");
 }
 
-
+/** 댓글수정완료 시 */
 const handleCompleteUpdateComment = (commentBox, updatedComment) => {
+    alert("댓글수정이 완료되었습니다.");
     const commentBody = commentBox.querySelector(".video__comment-body");
     const deleteBtn = commentBox.querySelector(".video__comment-header .removeCommentBtn");
     const updateBtn = commentBox.querySelector(".video__comment-header .updateCommentBtn");
@@ -108,7 +108,9 @@ const handleCompleteUpdateComment = (commentBox, updatedComment) => {
     deleteBtn.classList.toggle("display-none");
     updateBtn.classList.toggle("display-none");
     
-    // update 를 위한 textarea 태그 삭제
+    // update 를 위한 textarea 태그 및 버튼 삭제
+    commentBody.firstChild.remove();
+    commentBody.firstChild.remove();
     commentBody.firstChild.remove();
     
     // span element 추가
@@ -119,10 +121,21 @@ const handleCompleteUpdateComment = (commentBox, updatedComment) => {
 
 const handleCancelUpdateComment = (event) => {
     event.preventDefault();
+    const confirm = window.confirm("댓글수정을 취소하시겠습니까?");
+    if (confirm) return;
+
     const commentBox = event.target.parentNode.parentNode;
     const commentBody = commentBox.querySelector(".video__comment-body");
+    const deleteBtn = commentBox.querySelector(".video__comment-header .removeCommentBtn");
+    const updateBtn = commentBox.querySelector(".video__comment-header .updateCommentBtn");
+    
+    // header 의 수정하기, 삭제하기 버튼 만들기
+    deleteBtn.classList.toggle("display-none");
+    updateBtn.classList.toggle("display-none");
     
     // 수정용 textarea 태그 삭제
+    commentBody.firstChild.remove();
+    commentBody.firstChild.remove();
     commentBody.firstChild.remove();
 
     // 기존 span 생성 및 
@@ -162,9 +175,8 @@ const handleUpdate = async(event) => {
     const comment_id = commentBox.dataset.id;
     const video_id = videoContainer.dataset.id;
 
-    const textarea = commentBox.querySelector(".video__comment-body .textarea__update").innerText;
-    const content = textarea.innerText;
-    console.log(content);
+    const textarea = commentBox.querySelector(".video__comment-body .textarea__update");
+    const content = textarea.value;
     const response = await fetch(`/api/videos/${video_id}/update/comment`, {
         method: "POST",
         headers: {
@@ -176,13 +188,16 @@ const handleUpdate = async(event) => {
         alert("댓글 수정 실패!");
     }
     if (response.status === 201) {
-        handleCompleteUpdateComment(commentBox, textarea.innerText);
+        handleCompleteUpdateComment(commentBox, content);
     }
     return;
 }
 
 const handleRemove = async(event) => {
     event.preventDefault();
+    const confirm = window.confirm("댓글을 삭제하시겠습니까?");
+    if (!confirm) return;
+
     const commentBox = event.target.parentNode.parentNode;
     const comment_id = commentBox.dataset.id;
     const video_id = videoContainer.dataset.id;
@@ -200,65 +215,9 @@ const handleRemove = async(event) => {
     }
 }
 
-const handleThumbUp = async(event) => {
-    event.preventDefault();
-    const video_id = videoContainer.dataset.id;
-    const response = await fetch(`/api/videos/${video_id}/thumb-up`, {
-        method: "POST",
-    })
-
-    if (response.status === 404) {
-        console.log("thumb-up error")
-        return;
-    }
-    if (response.status === 201) {
-        const { result, count, swap } = await response.json();
-        if (result === "add") {
-            thumbUp.style.backgroundColor = "blue";
-            thumbDown.style.backgroundColor = "gray";
-            thumbUpCount.innerText = count;
-            if (swap) {
-                thumbDown.innerText -= 1;
-            }
-        }
-        if (result === "remove") {
-            thumbUp.style.backgroundColor = "gray";
-            thumbUpCount.innerText = count;
-        }
-    }
-}
-
-const handleThumbDown = async(event) => {
-    event.preventDefault();
-    const video_id = videoContainer.dataset.id;
-    const response = await fetch(`/api/videos/${video_id}/thumb-down`, {
-        method: "POST",
-    })
-
-    if (response.status === 404) {
-        console.log("thumb-down error")
-        return;
-    }
-    if (response.status === 201) {
-        const { result, count, swap } = await response.json();
-        if (result === "add") {
-            thumbDown.style.backgroundColor = "blue";
-            thumbUp.style.backgroundColor = "gray";
-            thumbDownCount.innerText = count;
-            if (swap) {
-                thumbUp.innerText -= 1;
-            }
-        }
-        if (result === "remove") {
-            thumbDown.style.backgroundColor = "gray";
-            thumbDownCount.innerText = count;
-        }
-    }
-}
 
 form.addEventListener("submit", handleSubmit);
-thumbUp.addEventListener("click", handleThumbUp);
-thumbDown.addEventListener("click", handleThumbDown);
+
 Array.from(removeCommentBtnList).forEach(element => {
     element.addEventListener("click", handleRemove);
 });
