@@ -3,7 +3,7 @@ mixin sideVideo(video)
         div.side-video-mixin
             div.side-video-mixin__thumb(style=`background-image:url(/${video.thumbnailUrl});background-size:cover;background-position:center;`)
             div.side-video-mixin__data.flex-box-center-column
-                span.side-video-mixin__title=video.title 
+                p.side-video-mixin__title=video.title 
                 div.side-video-mixin__meta 
                     p #{video.owner.name}
                     p #{video.createdAt.toLocaleString('ko-KR', { timeZone: 'UTC' })}
