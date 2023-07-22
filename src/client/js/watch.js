@@ -80,7 +80,11 @@ const clickVideoDeleteBtn = () => {
     location.href = video_id + "/delete";
 }
 
-thumbUp.addEventListener("click", handleThumbUp);
-thumbDown.addEventListener("click", handleThumbDown);
-videoUpdateBtn.addEventListener("click", clickVideoUpdateBtn);
-videoDeleteBtn.addEventListener("click", clickVideoDeleteBtn);
+if (thumbUp && thumbDown) {
+    thumbUp.addEventListener("click", handleThumbUp);
+    thumbDown.addEventListener("click", handleThumbDown);
+}
+if (videoUpdateBtn && videoDeleteBtn) {
+    videoUpdateBtn.addEventListener("click", clickVideoUpdateBtn);
+    videoDeleteBtn.addEventListener("click", clickVideoDeleteBtn);
+}

@@ -39,12 +39,15 @@ export const watch = async (req, res) => {
   const video = await Video.findById(id)
                       .populate("owner")
                       .populate({path:"comment", model: "Comment", populate: {path: "owner", model: "User"}});
-  console.log(video);
   
-  if (video) {
-    return res.render("watch", { pageTitle: video.title, video});
+  const sideVideos = await Video.find({})
+                      .populate("owner");
+  
+  if (!video) {
+    return res.status(404).render("404", { pageTitle: "Video not found"});
   }
-  return res.status(404).render("404", { pageTitle: "Video not found"});
+  
+  return res.render("watch", { pageTitle: video.title, video, sideVideos});
 };
 
 export const getEdit = async (req, res) => {

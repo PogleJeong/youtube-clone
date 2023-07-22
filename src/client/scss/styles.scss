@@ -10,6 +10,7 @@
 @import "./components/forms.scss";
 @import "./components/social-login.scss";
 @import "./components/video-player.scss";
+@import "./components/side-video.scss";
 
 // Screens
 @import "./screens/home.scss";
@@ -86,5 +87,12 @@ main {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+}
+
+.flex-box-column-top-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
     align-items: center;
 }

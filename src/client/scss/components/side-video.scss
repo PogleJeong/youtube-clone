@@ -1,0 +1,17 @@
+.side-video-mixin {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    padding: 10px;
+    width: 100%;
+    height: 100px;
+    .side-video-mixin__data {
+        .side-video-mixin__title {
+            margin-bottom: 20px;
+        }
+        .side-video-mixin__meta {
+            p {
+                line-height: 180%;
+            }
+        }
+    }
+}
